@@ -1,0 +1,456 @@
+---
+title: "Introduction to R Programming"
+comment: "*an introduction to functions and objects*"
+output: 
+  learnr::tutorial:
+       progressive: TRUE
+       allow_skip: TRUE
+       ace_theme: "crimson_editor"
+       df_print: paged
+       
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload)
+```
+
+## Introduction
+
+These exercises will introduce you to R programming. 
+
+### HOW THIS WORKS
+
+You don't need to download or install any additional software to work though this tutorial (it's all your browser!).
+
+```{r Rlogo, echo = FALSE, out.height = "80%", out.width = "80%"}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/aosmith16/r-basics-workshop/master/images/Rlogo.png")
+```
+
+
+## Outline
+
+We will cover: 
+
+- Data Objects   
+  - vectors  
+  - data frames   
+
+- Functions  
+  - some 'base R' functions (`mean()`) that come shipped with R    
+  - a few custom, user-written functions that need to be loaded from outside packages 
+  
+- Visualizations 
+  - The `ggplot2` package 
+  - graph layers    
+  - graphing distributions  
+  
+
+### R is frustrating, but don't become an angry Kiwi
+
+If you're confused or bored just step away and come back later. 
+
+```{r angry-kiwi, echo = FALSE, out.height='60%', out.width='60%'}
+knitr::include_graphics(path = "https://github.com/mjfrigaard/img/blob/main/angry-kiwi.jpg?raw=true")
+```
+
+### Instead, look at this baby otter
+
+It always makes me feel better. 
+
+```{r otter, echo = FALSE, out.height='60%', out.width='60%'}
+knitr::include_graphics(path = "https://github.com/mjfrigaard/img/blob/main/otter.jpg?raw=true")
+```
+
+## Vectors
+
+The fundamental R object is the *vector*, and there are four types of atomic vectors: double, integer, logical, and character. 
+
+The first type of vector we will create is a logical vector. These can have one of two possible values: `TRUE` or `FALSE` (or abbreviated `T` or `F`).
+
+Create a logical vector and check what type it is by 
+
+```{r vector_logical, exercise=TRUE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+# print 'vector_logical' below
+```
+
+*`c` stands for concatenate, by the way.*
+
+```{r prepare-vector_logical-typeof, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+```
+
+What if we want to know what kind of vector it is? We can check with `typeof()` 
+
+Place `vector_logical` inside the `typeof()` function below:
+
+```{r vector_logical-typeof, exercise=TRUE, exercise.setup = "prepare-vector_logical-typeof"}
+# check the type of 'vector_logical' below
+typeof()
+```
+
+Logical vectors come in handy because you can get their `sum()` and know the total number of `TRUE` items. 
+
+Check it out: 
+
+```{r prepare-vector_logical-sum, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+```
+
+```{r sum-vector_logical, exercise=TRUE, exercise.setup = "prepare-vector_logical-sum"}
+# check the sum of 'vector_logical' below
+sum()
+```
+
+Now we're going to create a numerical vector called a `double`.
+
+```{r concatenate, exercise=TRUE}
+vector_double <- c(3, 7, 29, 4, 6.78)
+# type 'vector_double' on the line below and click Run Code again
+```
+
+So, now we've stored five numbers `vector_double`. 
+
+Place `vector_double` inside the parenthesis of the `typeof()` function:
+
+```{r prepare-vector_double, include=FALSE}
+vector_double <- c(3, 7, 29, 4, 6.78)
+```
+
+```{r typeof, exercise=TRUE, exercise.setup = "prepare-vector_double"}
+typeof()
+```
+
+The output tells us `vector_double` is a `double`, which is one of the two types of atomic numerical vectors. 
+
+The other type of numerical vector is called an `integer`, and we can create these like so: 
+
+```{r integer, exercise=TRUE}
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+# type 'vector_integer' on the line below and click Run Code again
+```
+
+Notice we need to place `L`s next to the integer values to keep them as whole numbers (not decimals). 
+
+Check what type of vector `vector_integer` is in the code chunk below:
+
+```{r prepare-vector_integer, include=FALSE}
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+```
+
+```{r typeof-integer, exercise=TRUE, exercise.setup = "prepare-vector_integer"}
+typeof()
+```
+
+And finally, there are string or character vectors, which typically contain words and text. These are create using quotes (`"` or `'`).
+
+Check the type of `vector_string` below:
+
+```{r vector_string, exercise=TRUE}
+vector_string <- c("Reckon", "Heaps", "Aye", "Suss", "Hardout")
+# check the type of 'vector_logical' below
+typeof()
+```
+
+There you have it! Now you know the four types of atomic vectors. Aren't you as happy as this American Marten?
+
+```{r american-marten, echo = FALSE, out.height = "80%", out.width = "80%"}
+knitr::include_graphics(path = "https://github.com/mjfrigaard/img/blob/main/american-marten.jpg?raw=true")
+```
+
+## Data frames 
+
+Most of the time we're encountering data in tables (like spreadsheets), so we'll build a `data.frame` with the vectors we created in the previous section.
+
+Click on the **Run Code** button below:
+
+```{r prepare-MyData, include=FALSE}
+vector_string <- c("Reckon", "Heaps", "Aye", "Suss", "Hardout")
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_double <- c(3, 7, 29, 4, 6.78)
+```
+
+```{r MyData, exercise=TRUE, exercise.setup = "prepare-MyData"}
+MyData <- data.frame(
+  "string" = vector_string,
+  "logical" = vector_logical,
+  "integer" = vector_integer,
+  "double" = vector_double
+)
+MyData
+```
+
+
+As you can see, a `data.frame` in R is like a spreadsheet. The data are organized in rows and columns. Place `StringData` inside the `str()` function and click on the **Run Code** button below to see how it works. 
+
+```{r prepare-MyData-str, include=FALSE}
+MyData <- structure(list(
+  string = c("Reckon", "Heaps", "Aye", "Suss", "Hardout"), 
+  logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+  integer = c(4L,21L, 2L, 3L, 10L), 
+  double = c(3, 7, 29, 4, 6.78)), 
+  class = "data.frame", row.names = c(NA, -5L))
+```
+
+```{r str-MyData, exercise=TRUE, exercise.setup = "prepare-MyData-str"}
+# put the MyData inside the str() function
+str()
+```
+
+## Functions
+
+Functions are the verbs in R. They do things to objects. Using functions to explore objects is called, "storing and exploring". 
+
+```{r store-explore, echo = FALSE, out.height = "80%", out.width = "80%"}
+knitr::include_graphics(path = "https://github.com/mjfrigaard/img/blob/main/store-explore.png?raw=true")
+```
+
+### Base R functions
+
+A simple example is the `mean()` function. 
+
+```{r prepare-mean, include=FALSE}
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_double <- c(3, 7, 29, 4, 6.78)
+```
+
+Use the `mean()` function to get the average from `vector_double` and `vector_integer`.
+
+```{r mean-fun, exercise=TRUE, exercise.setup = "prepare-mean"}
+# place vector_double inside mean()
+mean()
+# place vector_integer inside mean()
+mean()
+```
+
+If we want to get the mean of a vector in a `data.frame`, we need to use the `$` to 'subset' the column. It works like this. 
+
+```{r prepare-AllData-subet, include=FALSE}
+AllData <- structure(list(
+  string = c("Reckon", "Heaps", "Aye", "Suss", "Hardout"), 
+  logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+  integer = c(4L,21L, 2L, 3L, 10L), 
+  double = c(3, 7, 29, 4, 6.78)), 
+  class = "data.frame", row.names = c(NA, -5L))
+```
+
+```{r subset, exercise=TRUE, exercise.setup = "prepare-AllData-subet"}
+mean(AllData$integer)
+mean(AllData$double)
+```
+
+You can see why we have to subset with the `$` by looking at the `str()` output of `AllData`
+
+```r
+'data.frame':	5 obs. of  4 variables:
+ see? -> $ string : chr  "Reckon" "Heaps" "Aye" "Suss" ...
+ see? -> $ logical: logi  TRUE FALSE TRUE FALSE FALSE
+ see? -> $ integer: int  4 21 2 3 10
+ see? -> $ double : num  3 7 29 4 6.78
+```
+
+### User-written functions
+
+We can also check the structure of objects using the [`glimpse()` function from `dplyr`](https://tibble.tidyverse.org/reference/glimpse.html), a user written package. 
+
+You have to install these packages using the commands below (and have an internet connection)
+
+```{r packages-dplyr, eval=FALSE}
+install.packages("dplyr")
+library(dplyr)
+```
+
+Now we can use `glimpse()`
+
+```{r prepare-AllData-glimpse, include=FALSE}
+AllData <- structure(list(
+  string = c("Reckon", "Heaps", "Aye", "Suss", "Hardout"), 
+  logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+  integer = c(4L,21L, 2L, 3L, 10L), 
+  double = c(3, 7, 29, 4, 6.78)), 
+  class = "data.frame", row.names = c(NA, -5L))
+```
+
+```{r glimpse-SimonasData, exercise=TRUE, exercise.setup = "prepare-AllData-glimpse"}
+# place the AllData inside the glimpse() function
+glimpse()
+```
+
+We can also use the `skim()` function from the [`skimr` package](https://docs.ropensci.org/skimr/) to view the summary statistics for `SimonasData`. 
+
+```{r packages-skimr, eval=FALSE}
+install.packages("skimr")
+library(skimr)
+```
+
+Place `SimonasData` inside the `skim(data = )` function and click on the **Run Code** button below to see how it works. 
+
+```{r prepare-AllData-skimr, include=FALSE}
+AllData <- structure(list(
+  string = c("Reckon", "Heaps", "Aye", "Suss", "Hardout"), 
+  logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+  integer = c(4L,21L, 2L, 3L, 10L), 
+  double = c(3, 7, 29, 4, 6.78)), 
+  class = "data.frame", row.names = c(NA, -5L))
+```
+
+
+```{r skim-Normal, exercise=TRUE, exercise.setup = "prepare-AllData-skimr"}
+# place the AllData inside the skim() function
+skimr::skim(data = )
+```
+
+The [`skimr` package](https://docs.ropensci.org/skimr/) is great for "*displaying summary statistics the user can skim quickly to understand their data.*" The `skimr::skim()` output gives us: 
+
+- the `n_missing` and `complete_rate` (this comes in handy if we have a large dataset and want know what if any data are missing!)
+
+- the `mean` gives us the average for the data (the 'central location')  
+- the standard deviation (as `sd`), a measure of the data's disbursement (or 'spread')   
+  - *The standard deviation (`sd`) describes how far a variable's values are spread out around their `mean`*   
+- the lowest value for each variable, or minimum (as `p0`)    
+- the first quartile (as `p25`), which is the 'middle' of the data points *below* the median (see below)    
+- the median (as `p50`) or the 'middle' value for the data (half of the values are above, and half are below)    
+- the third quartile (as `p75`), which is the 'middle' of the data points *above* the median   
+  - *Together, the `p75` and `p25` can give us the interquartile range (IQR), which is the difference between the third and first quartiles* 
+- the highest value for each variable, or maximum (as `p100`)   
+- the `hist` column (a small histogram for the `numeric` variables)  
+
+## Visualizations
+
+We're going to build a visualizations using of the normal distribution. 
+
+The normal distribution is determined by the sample size (`n`), the average (or `mean`), and the standard deviation (`sd`). The shape of the curve in a normal distribution is always symmetrical, but it's not always the same shape. The shape of the distribution changes based on the `n`, `mean`, and `sd` arguments. 
+
+We're going to generate a series of plots, each with a normal distribution, but with varying values. We're going to store these values as vectors named `n`, `mean`, and `sd`.
+
+To generate these plots, we'll be using [`ggplot2`](https://ggplot2.tidyverse.org/), a popular data visualization package from RStudio. **This is not a data visualization tutorial.** We are only going to cover what you need to know to visualize the two distributions we mentioned in the outline. 
+
+### A base layer 
+
+The `ggplot()` function initiates the plot object and builds a base layer, or *canvas* to plot on. We'll store this canvas as `base_layer` 
+
+```{r prepare-base}
+base_layer <- ggplot()
+```
+
+```{r base, exercise=TRUE}
+base_layer <- ggplot()
+base_layer
+```
+
+Next we create limits for the `x` axis  
+
+- `xlim(0, 10)` sets the limits on the x axis from 0 to 10 
+
+```{r xlim, exercise=TRUE, exercise.setup = "prepare-base"}
+base_layer + 
+    # add limits for x axis 
+    xlim(0, 10)
+```
+
+Now we can add a `geom_function()` layer:  
+
+- we specify the distribution we want to see (`fun = dnorm`), `d` stands for *density*, and `norm` stands for *normal*  
+
+- the `mean` and `sd` are arguments (`args`) we provide in a `list()`
+
+```{r geom_function, exercise=TRUE, exercise.setup = "prepare-base"}
+base_layer + 
+    # x axis limits
+    xlim(0, 10) +
+    # add normal distribution layer
+    geom_function(
+        # dnorm is the normal distribution function
+        fun = dnorm, 
+        # the args are stored in a list(mean, sd)
+            args = list(mean = 5, 
+                        sd = 1))
+```
+
+There we have it--normal distribution! We can see the center of the distribution is directly above `5`. 
+
+The reason the normal distribution is so useful is that if a variable is normally distributed, we know the following: 
+
+1. The area under the curve that ranges from 1 standard deviation above the mean to 1 standard deviation below the mean contains approximately 68% of the data  
+
+2. The area under the curve that ranges from 2 standard deviations above the mean to 2 standard deviations below the mean covers approximately 95% of the data
+
+3. The area under the curve that ranges from 3 standard deviations above the mean to 3 standard deviations below the mean covers approximately 99.7% of the data
+
+So, if we know the a sample's mean and standard deviation, we can these two measurements to find (or plot) the shape of the distribution (*provided the data were sampled from a normal distribution*). In fact, that's exactly what we just did!
+
+Now we're going to see what happens when we change sample size: 
+
+- set the x axis limits to `(-4, 4)`   
+- change the `args` we supplied in the `list` to `n = 10` 
+
+```{r change-mean, exercise=TRUE, exercise.setup = "prepare-base"}
+base_layer + 
+    # set new x axis limits
+    xlim() +
+    # add normal distribution layer
+    geom_function(
+    # dnorm is the normal distribution function
+        fun = dnorm, 
+        # enter the new value below
+            n = ) 
+```
+
+Notice that the line for the distribution isn't as smooth as it was when we supplied the mean and sd. This is because it's difficult to draw a smooth line connecting only 10 data points. We will use the `stat_function()` to add another layer to our plot so we can see the data points in this distribution. 
+
+- `stat_function()` needs the `fun` set to `dnorm`, the `geom` set to `"point"`, and `n` set to `10` 
+
+```{r stat_function, exercise=TRUE, exercise.setup = "prepare-base"}
+base_layer + 
+    # x axis limits
+    xlim(-4, 4) +
+    # geom function layer
+    geom_function(fun = dnorm, n = 10) + 
+    # fill in the stat function values...
+    stat_function(
+        # set to dnorm
+        fun = , 
+        # set geom to "point"
+        geom = , 
+        # set n to 10
+        n = 
+    )
+```
+
+We can see the line passes through all ten data points. *What if we increase the sample size?*
+
+- Increase the sample size in each layer (`geom_function()` and `stat_function()`) to `100`
+
+```{r stat_function-large-sample, exercise=TRUE, exercise.setup = "prepare-base"}
+base_layer + 
+    xlim(-4, 4) +
+    geom_function(
+        fun = dnorm, 
+        # enter the new value below
+        n = ) + 
+    stat_function(
+        fun = dnorm, 
+        geom = "point", 
+        # enter the new value below
+        n = 
+    )
+```
+
+By increasing the sample size, we've made the distribution more 'bell-shaped' (it's hard to base predictions off of small samples).
+
+## The End
+
+There you have it! Your very own little introduction to R.
+
+Here is a kiwi for my favorite kiwi :)
+
+```{r kiwi, echo = FALSE, out.height = "80%", out.width = "80%"}
+knitr::include_graphics(path = "https://github.com/mjfrigaard/img/blob/main/kiwi.jpg?raw=true")
+```
