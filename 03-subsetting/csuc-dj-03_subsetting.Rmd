@@ -101,154 +101,200 @@ str(num_vec[[2:4]])
 Double brackets are usually reserved for subsetting more complex objects (like `data.frame`s or `list`s).
 
 
-```{r prepare-MovieData-str, include=FALSE}
+```{r prepare-MovieTibble-str, include=FALSE}
 source("https://bit.ly/3c6DfGe")
-MovieData <- create_movie_data()
+MovieTibble <- create_movie_data()
 ```
 
-Most of the data we'll encounter in this course will be in `data.frame`s or `tibble`s, so we've loaded the `MovieData` `tibble`. Check the structure below: 
+Most of the data we'll encounter in this course will be in `data.frame`s or `tibble`s, so we've loaded the `MovieTibble` `tibble`. Check the structure below: 
 
-```{r MovieData-str, exercise=TRUE, exercise.setup = "prepare-MovieData-str"}
-# check the structure of MovieData
+```{r MovieTibble-str, exercise=TRUE, exercise.setup = "prepare-MovieTibble-str"}
+# check the structure of MovieTibble
 str()
 ```
 
-`tibbles` are rectangular (like spreadsheets) and contain vectors of equal length. The dollar sign (`$`) can be used to subset the vectors by name. 
+`tibbles` are rectangular (like spreadsheets) and contain vectors of equal length. The dollar sign (`$`) can be used to subset the vectors by name.
 
-```{r dollar-sign-Simpsons}
-MovieData$title
+Use the dollar sign below to subset the `title` column from `MovieTibble`, but wrap the output in the `head()` function to minimize the output.
+
+```{r prepare-MovieTibble-dollar-sign, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-Note that both of these return vectors.
-
-```{r dollar-sign-AmericanDad}
-AmericanDad$character
+```{r MovieTibble-dollar-sign, exercise=TRUE, exercise.setup = "prepare-MovieTibble-dollar-sign"}
+# view the 'head()' of the title column
+head()
 ```
 
-### using `[]`
+**If we use the dollar sign to subset columns from a `tibble` or `data.frame`, the output is a vector.**
 
-We can use the row and column index to subset data frames and tibbles just like matrices and arrays. 
+We can also use the row and column position to subset `tibble`s just like vectors. But in order to use brackets, we need to supply **two positions** (or indexes): One for the row, and another for the column (as `data[row, column]`).
 
-```{r brackets-Simpsons}
-# homer's age
-Simpsons[1, 2]
+Use a single bracket to get the `length` of the movie `13 Going On 30`. 
+
+```{r prepare-MovieTibble-bracket, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-The output is a little different for subsetting tibbles:
-
-```{r brackets-AmericanDad}
-# Stan's age
-AmericanDad[1, 2]
+```{r MovieTibble-bracket, exercise=TRUE, exercise.setup = "prepare-MovieTibble-bracket"}
+# subset the 'length' (column 3) for '13 Going On 30' (in row 5)
+MovieTibble[ , ]
 ```
 
-Note that when we subset the data frame with a value in the row index (i.e. `Simpsons[ 2, ]`), R returns a data frame. However, if we subset Simpsons with a value in the column index (i.e. `Simpsons[ , 2]`) we get a vector. 
+Note that if we provide two indexes (`[ 5, 3]`) to subset `MovieTibble`, the return object is a `tibble`. The same is true if we use a single row or column index: 
 
-```{r subsetting-Simpsons-brackets}
-Simpsons[2, ]
-Simpsons[, 2]
+```{r prepare-MovieTibble-bracket-single-row-col-index, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-But when we subset a tibble, both return a tibble:
-
-```{r subsetting-AmericanDad-brackets}
-AmericanDad[2, ]
-AmericanDad[, 2]
+```{r MovieTibble-bracket-single-row-col-index, exercise=TRUE, exercise.setup = "prepare-MovieTibble-bracket-single-row-col-index"}
+# single row index
+str(MovieTibble[ 5, ])
+# single column index
+str(MovieTibble[ , 3])
 ```
 
-The same is true if we supply values to *both* rows and column indexes. 
+However, if we convert `MovieTibble` to a `data.frame` with `as.data.frame()`, a single row index returns a `data.frame` (with all seven columns), but a single column index returns a vector (of all rows): 
 
-```{r check-srt-df-tibble}
-# check structure
-Simpsons[1, 2] # Homer's age
-AmericanDad[1, 2] # Stan's age
+```{r prepare-MovieDataFrame-bracket-single-row-index, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-### using `[]` & `c()`
-
-We can use a numeric index for rows along with the names of the vectors (or columns) to subset data frames and tibbles:
-
-```{r subset-bracket-and-c-df}
-# Lisa's age and sex
-Simpsons[4, c("age", "sex")]
+```{r MovieDataFrame-bracket-single-row-index, exercise=TRUE, exercise.setup = "prepare-MovieDataFrame-bracket-single-row-index"}
+# convert to data.frame
+MovieDataFrame <- as.data.frame(MovieTibble)
+# provide a single row index for '13 Going On 30' (row 5)
+str(MovieDataFrame[ , ])
+# provide a single column index for the 'length' (column 3)
+str(MovieDataFrame[ , ])
 ```
 
-Note that the `Simpsons` data frame gives us a row-name (`4`), while the `AmericanDad` tibble only returns the two columns.
+This distinction is important because we need to know the structure of each object we're subsetting. 
 
-```{r subset-bracket-and-c-tib}
-# Francine's age and sex
-AmericanDad[2, c("age", "sex")]
+We can use column names to subset, too. We can use `c()` to subset the `"title"` and `"genres"` for `13 Going On 30`. 
+
+```{r prepare-MovieTibble-bracket-c-named-cols, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-
-### using `$` and `[]` 
-
-Because the dollar-sign returns a vector, we can subset this output by combing it with brackets (`[]`)
-
-```{r dollar-sign-brackets-df}
-# Bart's age
-Simpsons$age[3]
+```{r MovieTibble-bracket-c-named-cols, exercise=TRUE, exercise.setup = "prepare-MovieTibble-bracket-c-named-cols"}
+# enter "title" and "genres" in the c() to subset 
+# these columns
+MovieTibble[ 5, c("", "")]
 ```
 
-Both of these return a vector.
+We can also use this method to subset the `MovieDataFrame`: 
 
-```{r dollar-sign-brackets-tib}
-# Steven's age
-AmericanDad$age[3]
+```{r prepare-MovieDataFrame-bracket-c-named-cols, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
 ```
 
-### using `$` & `==`
-
-We can combine `$` with `==` to return a logical vector:
-
-```{r logical-vectors}
-Simpsons$age == 36
-AmericanDad$age == 15
+```{r MovieDataFrame-bracket-c-named-cols, exercise=TRUE, exercise.setup = "prepare-MovieDataFrame-bracket-c-named-cols"}
+# enter "title" and "genres" in the c() to subset 
+# these columns
+MovieDataFrame[ 5, c("", "")]
 ```
 
-We can also pass `$` and `==` a set of values with `c()` to return a logical vector. 
+Note the difference in the printed output: the `tibble` gives us the dimensions of the output object (`# A tibble: 1 × 2`), and the *number of rows* (`1`), while the `data.frame` prints column names (without the format) the row index (`5`).
 
-```{r subset-with-logicals-c}
-Simpsons$age == c(39, 8)
-AmericanDad$age == c(42, 40)
+Recall that the dollar-sign returns a vector (`MovieTibble$`), which means we can subset this output by combing it with brackets (`[]`)
+
+```{r prepare-MovieTibble-dollar-sign-bracket, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
 ```
 
-This might not seem very helpful, but it comes in handy when we combine this with `[]`.
-
-### using `[]`, `$` and `==` 
-
-Below we combine the logical output from `$` and `==` with `[]` to subset data frames and tibbles:
-
-```{r subset-with-logicals}
-# return Stan and Hayley's age and sex
-AmericanDad[AmericanDad$age == c(42, 19), ]
-# return the rows in Simpsons where age is 36
-Simpsons[Simpsons$age == 36, ]
+```{r MovieTibble-dollar-sign-bracket, exercise=TRUE, exercise.setup = "prepare-MovieTibble-dollar-sign-bracket"}
+# subset the movie "13 Going On 30" (in position 5)
+MovieTibble$title[ ]
 ```
 
-Again, we see the output from the data frame (`Simpsons`) returns a data frame with a row-name (`2`). 
+We can also combine the dollar sign `$` with `==` to return a logical vector. Use `str()` to view the structure of the two logical conditions below:
 
-### using `[[]]`
+```{r prepare-MovieTibble-dollar-sign-equals, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
+```
 
-We can control the subsetted results for *both* tibbles and data frames using double brackets (`[[]]`). 
+```{r MovieTibble-dollar-sign-equals, exercise=TRUE, exercise.setup = "prepare-MovieTibble-dollar-sign-equals"}
+# return the structure of movies less than 95 minutes long
+str(MovieTibble$length < )
+```
 
-Let's review the behavior of single brackets. If we use a single bracket (without commas) and a numerical index, we get the first column in both `Simpsons` and `AmericanDad` as a rectangular object.
+```{r prepare-MovieDataFrame-dollar-sign-equals, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
+```
 
-```{r single-bracket-subset}
-# character column from data frame
-str(Simpsons[1])
+```{r MovieDataFrame-dollar-sign-equals, exercise=TRUE, exercise.setup = "prepare-MovieDataFrame-dollar-sign-equals"}
+# return the structure of movies greater than 90 minutes long
+str(MovieDataFrame$length > )
+```
+
+Logical vectors might not seem very helpful, but they come in handy when we combine them with `[]`.
+
+We can use the logical vectors from `$` and `==` in combination with `[]` to subset `data.frame`s and `tibble`s. Use the code below to subset all movies in `MovieTibble` that are 120 minutes long.
+
+```{r prepare-MovieTibble-dollar-sign-equals-bracket, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+```
+
+```{r MovieTibble-dollar-sign-equals-bracket, exercise=TRUE, exercise.setup = "prepare-MovieTibble-dollar-sign-equals-bracket"}
+# return movies that are 120 minutes long (recall that 'length' is 
+# a column, so the '120' should be in the column position)
+MovieTibble[MovieTibble$length == , ]
+```
+
+We can also use `c()` with `$`, `==` and `[]` to subset multiple movie lengths from `MovieDataFrame`.
+
+```{r prepare-MovieDataFrame-dollar-sign-equals-bracket-c, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
+```
+
+```{r MovieDataFrame-dollar-sign-equals-bracket-c, exercise=TRUE, exercise.setup = "prepare-MovieDataFrame-dollar-sign-equals-bracket-c"}
+# return movie 'title' and 'length' that are 85 and 110 minutes long 
+MovieDataFrame[MovieDataFrame$length == c( , ), c(" ", " ")]
+```
+
+We can control the subsetted results for *both* tibbles and data frames using double brackets (`[[]]`). Let's review the behavior of single brackets. If we use a single bracket (without commas) and a numerical index, we get the first column in both `MovieTibble` and `MovieDataFrame` as a rectangular object.
+
+```{r prepare-MovieTibble-MovieDataFrame-review-bracket, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
+```
+
+```{r MovieTibble-MovieDataFrame-review-bracket, exercise=TRUE, exercise.setup = "prepare-MovieTibble-MovieDataFrame-review-bracket"}
 # character column from tibble
-str(AmericanDad[1])
+str(MovieTibble[1])
+# character column from data frame 
+str(MovieDataFrame[1])
 ```
 
-If we use double-brackets, we get the same first column, but as a vector. 
+But if we use double-brackets, we get the same first column, but as a vector. 
 
-```{r double-bracket-tib}
+```{r prepare-MovieTibble-MovieDataFrame-double-brackets, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieTibble <- create_movie_data()
+MovieDataFrame <- as.data.frame(MovieTibble)
+```
+
+```{r MovieTibble-MovieDataFrame-double-brackets, exercise=TRUE, exercise.setup = "prepare-MovieTibble-MovieDataFrame-double-brackets"}
 # character column as vectors
-str(Simpsons[[1]])
-str(AmericanDad[[1]])
+str(MovieTibble[[1]])
+str(MovieDataFrame[[1]])
 ```
 
-
-
-
-
+<div data-iframe-height></div>

@@ -1,0 +1,62 @@
+---
+comment: "*data visualization R with ggplot2 (part 1)*"
+output: 
+  html_document:
+    includes:
+      in_header: resizer.html
+       
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+                      upload.fun = imgur_upload, 
+          exercise.cap = "introduction to ggplot2",
+                      warning = FALSE, 
+                      message = FALSE, 
+                      fig.align = "center", 
+                      dpi = 480, 
+                      tibble.max_extra_cols = 6, 
+                      tibble.width = 60,
+                      fig.width = 7,
+                      fig.height = 5,
+                      fig.path = "img/")
+```
+
+Objectives: 
+
+1) Introduction to the grammar of graphics  
+2) Identifying graph aesthetics (`x`, `y`, `color`, and `fill`)  
+3) Recognizing and using geoms (`geom_histogram()`, `geom_point()`, `geom_bar()`, etc.)  
+4) Faceting   
+
+```{r prepare-MovieData, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+```
+
+These exercises will cover an introduction to data visualization using `ggplot2`. More information is available in the [lessons](https://mjfrigaard.github.io/csuc-data-journalism/lessons/wk3-01_intro-to-data-viz-ggp2-part-01.html) and [slides.](https://mjfrigaard.github.io/csuc-data-journalism/slides/wk-04.0-data-viz-intro.html#1)
+
+View the `MovieData` dataset in the code chunk by clicking on the **Run Code** button:
+
+```{r num_vec, exercise=TRUE, exercise.setup = "prepare-MovieData"}
+# print MovieData below
+MovieData
+```
+
+View the template for creating a `ggplot2` template below:
+
+ggplot2-template.png
+
+```{r ggplot2-template-01, echo=FALSE}
+# knitr::include_graphics("img/ggplot2-template.png")
+```
+
+![](img/ggplot2-template.png)
+
+
+<div data-iframe-height></div>
