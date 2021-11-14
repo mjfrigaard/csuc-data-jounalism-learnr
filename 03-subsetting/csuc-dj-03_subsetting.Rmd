@@ -85,23 +85,169 @@ x <- c(2, 3, 4)
 
 We can see the `num_vec[x]` returns the same result as `num_vec[2:4]`. 
 
-We can also use double-brackets to subset vectors (`[[]]`), but this is usually reserved for subsetting more complex objects (like `data.frame`s or `list`s).
+We can also use double-brackets to subset a single position from a vectors (`[[]]`), but this doesn't work for a numerical range: 
 
 ```{r prepare-num_vec-compare-brackets, include=FALSE}
 num_vec <- c(2, 9, 4, 3, 7)
 ```
 
-```{r num_vec-compare-brackets, exercise=TRUE, exercise.setup = "prepare-num_vec-index-c"}
-# the outputs below are identical
+```{r num_vec-compare-brackets, exercise=TRUE, exercise.setup = "prepare-num_vec-index-c", error=TRUE}
+# this works
+str(num_vec[[2]])
+# this doesn't
 str(num_vec[[2:4]])
-str(num_vec[2:4])
 ```
 
+Double brackets are usually reserved for subsetting more complex objects (like `data.frame`s or `list`s).
 
 
 ```{r prepare-MovieData-str, include=FALSE}
-source("MovieData.R")
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
 ```
+
+Most of the data we'll encounter in this course will be in `data.frame`s or `tibble`s, so we've loaded the `MovieData` `tibble`. Check the structure below: 
+
+```{r MovieData-str, exercise=TRUE, exercise.setup = "prepare-MovieData-str"}
+# check the structure of MovieData
+str()
+```
+
+`tibbles` are rectangular (like spreadsheets) and contain vectors of equal length. The dollar sign (`$`) can be used to subset the vectors by name. 
+
+```{r dollar-sign-Simpsons}
+MovieData$title
+```
+
+Note that both of these return vectors.
+
+```{r dollar-sign-AmericanDad}
+AmericanDad$character
+```
+
+### using `[]`
+
+We can use the row and column index to subset data frames and tibbles just like matrices and arrays. 
+
+```{r brackets-Simpsons}
+# homer's age
+Simpsons[1, 2]
+```
+
+The output is a little different for subsetting tibbles:
+
+```{r brackets-AmericanDad}
+# Stan's age
+AmericanDad[1, 2]
+```
+
+Note that when we subset the data frame with a value in the row index (i.e. `Simpsons[ 2, ]`), R returns a data frame. However, if we subset Simpsons with a value in the column index (i.e. `Simpsons[ , 2]`) we get a vector. 
+
+```{r subsetting-Simpsons-brackets}
+Simpsons[2, ]
+Simpsons[, 2]
+```
+
+But when we subset a tibble, both return a tibble:
+
+```{r subsetting-AmericanDad-brackets}
+AmericanDad[2, ]
+AmericanDad[, 2]
+```
+
+The same is true if we supply values to *both* rows and column indexes. 
+
+```{r check-srt-df-tibble}
+# check structure
+Simpsons[1, 2] # Homer's age
+AmericanDad[1, 2] # Stan's age
+```
+
+### using `[]` & `c()`
+
+We can use a numeric index for rows along with the names of the vectors (or columns) to subset data frames and tibbles:
+
+```{r subset-bracket-and-c-df}
+# Lisa's age and sex
+Simpsons[4, c("age", "sex")]
+```
+
+Note that the `Simpsons` data frame gives us a row-name (`4`), while the `AmericanDad` tibble only returns the two columns.
+
+```{r subset-bracket-and-c-tib}
+# Francine's age and sex
+AmericanDad[2, c("age", "sex")]
+```
+
+
+### using `$` and `[]` 
+
+Because the dollar-sign returns a vector, we can subset this output by combing it with brackets (`[]`)
+
+```{r dollar-sign-brackets-df}
+# Bart's age
+Simpsons$age[3]
+```
+
+Both of these return a vector.
+
+```{r dollar-sign-brackets-tib}
+# Steven's age
+AmericanDad$age[3]
+```
+
+### using `$` & `==`
+
+We can combine `$` with `==` to return a logical vector:
+
+```{r logical-vectors}
+Simpsons$age == 36
+AmericanDad$age == 15
+```
+
+We can also pass `$` and `==` a set of values with `c()` to return a logical vector. 
+
+```{r subset-with-logicals-c}
+Simpsons$age == c(39, 8)
+AmericanDad$age == c(42, 40)
+```
+
+This might not seem very helpful, but it comes in handy when we combine this with `[]`.
+
+### using `[]`, `$` and `==` 
+
+Below we combine the logical output from `$` and `==` with `[]` to subset data frames and tibbles:
+
+```{r subset-with-logicals}
+# return Stan and Hayley's age and sex
+AmericanDad[AmericanDad$age == c(42, 19), ]
+# return the rows in Simpsons where age is 36
+Simpsons[Simpsons$age == 36, ]
+```
+
+Again, we see the output from the data frame (`Simpsons`) returns a data frame with a row-name (`2`). 
+
+### using `[[]]`
+
+We can control the subsetted results for *both* tibbles and data frames using double brackets (`[[]]`). 
+
+Let's review the behavior of single brackets. If we use a single bracket (without commas) and a numerical index, we get the first column in both `Simpsons` and `AmericanDad` as a rectangular object.
+
+```{r single-bracket-subset}
+# character column from data frame
+str(Simpsons[1])
+# character column from tibble
+str(AmericanDad[1])
+```
+
+If we use double-brackets, we get the same first column, but as a vector. 
+
+```{r double-bracket-tib}
+# character column as vectors
+str(Simpsons[[1]])
+str(AmericanDad[[1]])
+```
+
 
 
 
