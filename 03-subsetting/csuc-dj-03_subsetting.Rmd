@@ -1,0 +1,108 @@
+---
+comment: "*subsetting data in R*"
+output: 
+  html_document:
+    includes:
+      in_header: resizer.html
+       
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload, exercise.cap = "extracting data from objects in R")
+```
+
+There are three primary methods for subetting in R: 
+
+1. single brackets: `[`  
+2. double brackets: `[[`  
+3. dollar sign: `$`  
+
+```{r prepare-num_vec, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+View the numeric vector (`num_vec`) in the code chunk by clicking on the **Run Code** button:
+
+```{r num_vec, exercise=TRUE, exercise.setup = "prepare-num_vec"}
+num_vec
+```
+
+Subset `num_vec` using brackets and a numerical position (or index):
+
+```{r prepare-num_vec-index, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+```{r num_vec-index, exercise=TRUE, exercise.setup = "prepare-num_vec-index"}
+# subset the number at position 5
+
+# subset the number at position 2
+
+```
+
+We can also subset a range of numbers using `:`. Subset the numbers from position 2-4 using `2:4`:
+
+```{r prepare-num_vec-index-range, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+```{r num_vec-index-range, exercise=TRUE, exercise.setup = "prepare-num_vec-index-range"}
+# subset numbers 2-4 
+
+```
+
+The output from `num_vec[2:4]` is another vector (of the numbers we've subsetted).
+
+```{r prepare-num_vec-index-range-str, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+```{r num_vec-index-range-str, exercise=TRUE, exercise.setup = "prepare-num_vec-index-range"}
+# check the structure of num_vec[2:4] with str() below
+str()
+```
+
+This is a numeric vector with three numbers (`num [1:3] 9 4 3`)
+
+We can also use the `c()` function to create an index and use it to subset `num_vec`. The object `x` below contains the three positions for the numerical index above (`2:4`).
+
+```{r prepare-num_vec-index-c, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+```{r num_vec-index-c, exercise=TRUE, exercise.setup = "prepare-num_vec-index-c"}
+# create x with c()
+x <- c(2, 3, 4)
+# subset num_vec with x
+
+```
+
+We can see the `num_vec[x]` returns the same result as `num_vec[2:4]`. 
+
+We can also use double-brackets to subset vectors (`[[]]`), but this is usually reserved for subsetting more complex objects (like `data.frame`s or `list`s).
+
+```{r prepare-num_vec-compare-brackets, include=FALSE}
+num_vec <- c(2, 9, 4, 3, 7)
+```
+
+```{r num_vec-compare-brackets, exercise=TRUE, exercise.setup = "prepare-num_vec-index-c"}
+# the outputs below are identical
+str(num_vec[[2:4]])
+str(num_vec[2:4])
+```
+
+
+
+```{r prepare-MovieData-str, include=FALSE}
+source("MovieData.R")
+```
+
+
+
+

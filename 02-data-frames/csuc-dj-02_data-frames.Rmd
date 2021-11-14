@@ -1,0 +1,154 @@
+---
+comment: "*Rectangular data in R*"
+output: 
+  html_document:
+    includes:
+      in_header: resizer.html
+       
+runtime: shiny_prerendered
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload, exercise.cap = "data.frames and tibbles in R")
+```
+
+Most of the time we're encountering data in tables (like spreadsheets). In R, tabular data are stored in `data.frame`s or `tibble`s. 
+
+The code below builds a `data.frame` with the vectors we created in the previous exercise. Click on the **Run Code** button below:
+
+```{r prepare-MyDataFrame, include=FALSE}
+vector_string <-  c("hat", "chair", "cat", "dog", "book")
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_double <- c(3, 7, 29, 4, 6.78)
+```
+
+```{r MyDataFrame, exercise=TRUE, exercise.setup = "prepare-MyDataFrame"}
+# this is how we create a data.frame
+MyDataFrame <- data.frame(
+  "string" = vector_string,
+  "logical" = vector_logical,
+  "integer" = vector_integer,
+  "double" = vector_double
+)
+```
+
+`data.frame`s in R are similar to spreadsheets. The data are organized in rows and columns. 
+
+Place `MyDataFrame` inside the `str()` function and click on the **Run Code** button below to see how it works. 
+
+```{r prepare-MyDataFrame-str, include=FALSE}
+MyDataFrame <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"), 
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = "data.frame", 
+    row.names = c(NA, -5L))
+```
+
+```{r str-MyDataFrame, exercise=TRUE, exercise.setup = "prepare-MyDataFrame-str"}
+# put the MyDataFrame inside the str() function
+str()
+```
+
+We can see `str()` prints the number of rows (`5 obs.`) and columns (`4 variables:`), and a preview of it's contents. 
+
+In this course, we will primarily use `tibble`s, which are similar to `data.frame`s. The code below creates a `tibble` with the same content as `MyDataFrame`. 
+
+```{r MyTibble, exercise=TRUE}
+# this is how we create a tibble
+MyTibble <- tibble::tribble(
+            ~string, ~logical, ~integer, ~double,
+              "hat",     TRUE,       4L,       3,
+            "chair",    FALSE,      21L,       7,
+              "cat",     TRUE,       2L,      29,
+              "dog",    FALSE,       3L,       4,
+             "book",    FALSE,      10L,    6.78
+            )
+```
+
+```{r prepare-MyTibble-str, include=FALSE}
+MyTibble <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"),
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = c("tbl_df", "tbl", "data.frame"), 
+    row.names = c(NA, -5L))
+```
+
+Place `MyTibble` inside the `str()` function and click on the **Run Code** button below to view it's structure:
+
+```{r str-MyTibble, exercise=TRUE, exercise.setup = "prepare-MyTibble-str"}
+# put the MyTibble inside the str() function
+str()
+```
+
+The output from `str(MyTibble)` prints the number of rows x columns (`[5 × 4]`) and the *class* (`S3: tbl_df/tbl/data.frame`), and a preview of it's contents. 
+
+`tibble`s print to the screen a little nicer to the screen. Print `MyTibble` in the code chunk below: 
+
+```{r prepare-MyTibble-print, include=FALSE}
+MyTibble <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"),
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = c("tbl_df", "tbl", "data.frame"), 
+    row.names = c(NA, -5L))
+```
+
+```{r MyTibble-print, exercise=TRUE, exercise.setup = "prepare-MyTibble-print"}
+# print MyTibble
+
+```
+
+We can see the format of each column is also printed with the output (`<chr>`, `<lgl>`, `<int>`, `<dbl>`). Compare this to `MyDataFrame` in the code chunk below:
+
+```{r prepare-MyDataFrame-print, include=FALSE}
+MyDataFrame <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"), 
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = "data.frame", 
+    row.names = c(NA, -5L))
+```
+
+```{r MyDataFrame-print, exercise=TRUE, exercise.setup = "prepare-MyDataFrame-print"}
+# print MyDataFrame
+
+```
+
+Both `data.frame`s and `tibble`s are lists. Click on the **Run Code** button below to view the `typeof()` for `MyDataFrame` and `MyTibble`:
+
+```{r prepare-MyDataFrame-MyTibble-typeof, include=FALSE}
+MyDataFrame <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"), 
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = "data.frame", 
+    row.names = c(NA, -5L))
+MyTibble <- structure(list(
+    string = c("hat", "chair", "cat", "dog", "book"),
+    logical = c(TRUE, FALSE, TRUE, FALSE, FALSE), 
+    integer = c(4L, 21L, 2L, 3L, 10L), 
+    double = c(3, 7, 29, 4, 6.78)), 
+    class = c("tbl_df", "tbl", "data.frame"), 
+    row.names = c(NA, -5L))
+```
+
+```{r MyDataFrame-MyTibble-typeof, exercise=TRUE, exercise.setup = "prepare-MyDataFrame-MyTibble-typeof"}
+# place MyDataFrame in typeof()
+typeof()
+# place MyTibble in typeof()
+typeof()
+```
+
