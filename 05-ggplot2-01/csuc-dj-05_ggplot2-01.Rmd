@@ -396,16 +396,76 @@ MovieData %>% ggplot() +
 
 ## Map color
 
-We've looked at the relationship between movie length and average IMDB rating, and there doesn't seem to be a strong relationship. If there had been, the points would look like 
+We've looked at the relationship between movie length and average IMDB rating, and there doesn't seem to be a strong relationship. 
 
-```{r rnorm_multi}
-CorrData <- rnorm_multi(n = 100, 
-                        mu = c(0, 20, 20),
-                        sd = c(1, 5, 5),
-                        r = c(0.5, 0.5, 0.25), 
-                        varnames = c("A", "B", "C"),
-                        empirical = FALSE)
+```{r}
+MovieData %>% ggplot() + 
+    # add length to the x
+    aes(x = length, y = rating) + 
+    geom_point()
 ```
+
+If there was a strong relationship between been, the points would look more like the data below:
+
+```{r rnorm_multi, include=FALSE}
+source(file = "https://bit.ly/3oMbnNt")
+CorrData08 <- rnorm_multi(n = 1000,  
+                          mu = c(6, 6, 240), 
+                          sd = c(1, 1, 3), 
+                          r = c(0.6, 0.4, 0.8), 
+                          varnames = c("Z", "rating", "length"),
+                          empirical = TRUE) %>% 
+                          select(-Z)
+fs::dir_create("data/05-ggplot2-01/")
+readr::write_csv(CorrData08, "data/05-ggplot2-01/CorrData08.csv")
+CorrData06 <- rnorm_multi(n = 1000,  
+                          mu = c(6, 6, 240), 
+                          sd = c(1, 1, 3), 
+                          r = c(0.6, 0.4, 0.6), 
+                          varnames = c("Z", "rating", "length"),
+                          empirical = TRUE) %>% 
+                          select(-Z)
+readr::write_csv(CorrData06, "data/05-ggplot2-01/CorrData06.csv")
+CorrData04 <- rnorm_multi(n = 1000, 
+            mu = c(6, 6, 240), 
+            sd = c(1, 1, 3), 
+            r = c(0.6, 0.4, 0.4), 
+            varnames = c("Z", "rating", "length"),
+            empirical = TRUE) %>% 
+            select(-Z)
+readr::write_csv(CorrData04, "data/05-ggplot2-01/CorrData04.csv")
+```
+
+```{r CorrData08, echo=FALSE}
+CorrData08 %>% 
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point() + 
+    labs(title = "Average IMDB user rating by movie length",
+        subtitle = "Simulated correlation = 0.8",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating")
+```
+
+
+```{r cor-06, echo=FALSE}
+CorrData06 %>% 
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point() + 
+    labs(title = "Scatter-plot for correlated data", 
+         subtitle = "Correlation = 0.6")
+```
+
+```{r cor-04, echo=FALSE}
+CorrData04 %>% 
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point() + 
+    labs(title = "Scatter-plot for correlated data", 
+         subtitle = "Correlation = 0.4")
+```
+
+
+
 
 
 ```{r prepare-MovieData-map-color, include=FALSE}
