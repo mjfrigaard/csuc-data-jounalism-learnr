@@ -18,6 +18,7 @@ library(learnr)
 library(tidyverse)
 library(skimr)
 library(knitr)
+library(vroom)
 library(faux)
 knitr::opts_chunk$set(error = TRUE,
                       upload.fun = imgur_upload, 
@@ -59,13 +60,13 @@ How the layered grammar of graphics works:
 - Variables are mapped to aesthetics (`x`, `y`, `fill`, `color`, etc)  
 
 ```{r ggplot2-template, echo=FALSE, out.height='70%', out.width='70%'}
-knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/04-ggplot2-01/img/ggplot2-template.png")
+knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/05-ggplot2-01/img/ggplot2-template.png")
 ```
 
 After the graph has been initialized, we add geoms (which are linked to underlying statistics)
 
 ```{r ggplot2-template-01, echo=FALSE, out.height='95%', out.width='95%'}
-knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/04-ggplot2-01/img/ggplot2-template-01.png")
+knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/05-ggplot2-01/img/ggplot2-template-01.png")
 ```
 
 
@@ -203,9 +204,9 @@ The lines extending horizontally from the box are called 'whiskers', and these r
 
 The points on the far-left hand side of the box-plot (beyond the whiskers) are called 'outliers' because they're *much lower* (or higher) than the other values for `rating`.
 
-## Confirm statistics
+## Summary statistics
 
-We can confirm all the numbers in the box-plot by passing ` MovieData$rating` to  `skimr::skim()`:
+We can confirm the numbers in the box-plot by passing ` MovieData$rating` to  `skimr::skim()`:
 
 ```{r prepare-skimr-rating, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -218,6 +219,8 @@ MovieData <- filter(MovieData, !is.na(budget))
 # pass MovieData$rating to skimr::skim()
 skimr::skim()
 ```
+
+The median IMDB rating is a good measure of the 'middle' of this variable. We can see from the `skim()` output above that this value is `6.1` (as `p50`). The box-plot confirms this, as well as the 25th and 75th percentile (as `p25` and `p75`) in the lower and upper hinges (`5.2` and `6.9`). 
 
 Click on **Run Code** below to compare the `skimr` output to the boxplot we created above:
 
@@ -247,56 +250,13 @@ ggp_boxplot_rating <- x_layer +
 
 ```{r ggp_boxplot_rating-skim, exercise=TRUE, exercise.setup = "prepare-ggp_boxplot_rating-skim"}
 # print ggp_boxplot_rating below
+
+
 ```
 
-The `p50` is the median (or middle value). `p25` and `p75` are the 25th and 75th percentiles (also called the first and third quartiles). Learn more about box-plots in this great [medium post](https://medium.com/dayem-siddiqui/understanding-and-interpreting-box-plots-d07aab9d1b6c). 
+Learn more about box-plots in this great [medium post](https://medium.com/dayem-siddiqui/understanding-and-interpreting-box-plots-d07aab9d1b6c). 
 
-## Numeric vs. categorical relationships
-
-Box-plots are also great because they take up less room than histograms or density plots, which means we can see how a continuous variable like `rating` is distributed across a categorical variable (like `mpaa`). 
-
-```{r prepare-MovieData-mpaa-factor, include=FALSE}
-source("https://bit.ly/3c6DfGe")
-MovieData <- create_movie_data()
-MovieData <- filter(MovieData, !is.na(budget))
-MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
-                                levels = c("PG", "PG-13", "R"), 
-                                labels = c("PG", "PG-13", "R")))
-```
-
-Use the code below to create your labels: 
-
-```{r labs_boxplot_mpaa_rating, eval=FALSE}
-labs_boxplot_mpaa_rating <- labs(
-        title = "Average IMDB user rating by MPAA Rating",
-        subtitle = "Data from ggplot2movies (http://imdb.com/)",
-        caption = "made with geom_boxplot()",
-        x = "IMDB Rating", 
-        y = "MPAA Rating")
-```
-
-I've initialized the plot and added the aesthetics. Add a `geom_boxplot()` layer and the labels.
-
-```{r MovieData-mpaa-factor, exercise=TRUE, exercise.setup = "prepare-MovieData-mpaa-factor"}
-# paste labs_boxplot_mpaa_rating code below: 
-
-# initialize the plot
-MovieData %>% ggplot() + 
-    # add aesthetics
-    aes(x = rating, y = mpaa) + 
-    # add geom_boxplot
-    
-    # add labels
-    
-```
-
-*How would you describe the relationship between IMDB ratings and MPAA ratings?*
-
-Now we're going to graph two numerical variables: `length` and `rating`. 
-
-## Exploring columns
-
-The code below uses `dplyr::select()`s these variables from `MovieData` and gets a `skim()` (summary statistics). 
+We can also use `dplyr::select()` to view both the `length` and `rating` variables from `MovieData` with the `skim()` function.
 
 ```{r prepare-MovieData-length-rating-skim, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -309,17 +269,27 @@ MovieData <- mutate(MovieData, mpaa = factor(mpaa,
 
 Click **Run Code** and view the results:
 
-```{r MovieData-length-rating-skim, exercise=TRUE, exercise.setup = "prepare-MovieData-mpaa-factor"}
+```{r MovieData-length-rating-skim, exercise=TRUE, exercise.setup = "prepare-MovieData-length-rating-skim"}
 MovieData %>% 
     dplyr::select(length, rating) %>% 
     skimr::skim()
 ```
 
+We can see the median movie length is around 90 minutes long, the shortest movie is 7 minutes, and the longest movie is 251 minutes.
+
+Now we're going to confirm the summary statistics for `length` with a box-plot. 
+
 ## Checking our expectations
 
-We can see the median movie length is around 90 minutes long, the shortest movie is 7 minutes, and the longest movie is 251 minutes. 
-
 Use the code below to create a box-plot of `length` so we can get a better understanding of this variables distribution. 
+
+```{r labs_boxplot_length, eval=FALSE}
+labs_boxplot_length <- labs(
+        title = "Average IMDB user rating by MPAA Rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "Movie length (in minutes)")
+```
 
 ```{r prepare-MovieData-length-boxplot, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -328,14 +298,6 @@ MovieData <- filter(MovieData, !is.na(budget))
 MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
                                 levels = c("PG", "PG-13", "R"), 
                                 labels = c("PG", "PG-13", "R")))
-```
-
-```{r labs_boxplot_length, eval=FALSE}
-labs_boxplot_length <- labs(
-        title = "Average IMDB user rating by MPAA Rating",
-        subtitle = "Data from ggplot2movies (http://imdb.com/)",
-        caption = "made with geom_boxplot()",
-        x = "Movie length (in minutes)")
 ```
 
 ```{r MovieData-length-boxplot, exercise=TRUE, exercise.setup = "prepare-MovieData-length-boxplot"}
@@ -353,7 +315,73 @@ MovieData %>% ggplot() +
 
 Based on what we saw in the `skim()` output, does the box-plot match our expectations?
 
-## Numeric X vs. Y relationships 
+## Numeric vs. categorical relationships
+
+Box-plots are also great because they take up less room than histograms or density plots, which means we can see how a continuous variable like `rating` is distributed across a categorical variable (like `mpaa`). 
+
+```{r prepare-MovieData-mpaa-skim, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+First we're going to use `group_by()` from `dplyr` to view the summary statistics for `rating` by `mpaa`. 
+
+```{r MovieData-mpaa-skim, exercise=TRUE, exercise.setup = "prepare-MovieData-mpaa-skim"}
+MovieData %>% 
+    group_by( ) %>% # add mpaa to the group_by() function
+    skim(rating)
+```
+
+We can see the output from `skim` tells us the median (`p50`) IMDB rating across the three levels of `mpaa` are `PG` = `5.7`, `PG-13` = `6`, and `R` = `6.2`. 
+
+We'll use the code below to build a box-plot of the mpaa and rating variables. 
+
+First, create the labels: 
+
+```{r labs_boxplot_mpaa_rating, eval=FALSE}
+labs_boxplot_mpaa_rating <- labs(
+        title = "Average IMDB user rating by MPAA Rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "IMDB Rating", 
+        y = "MPAA Rating")
+```
+
+The code below initializes the plot and maps the aesthetics. Add the  `geom_boxplot()` layer and the labels.
+
+```{r prepare-MovieData-rating-mpaa-geom_boxplot, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+```{r MovieData-rating-mpaa-geom_boxplot, exercise=TRUE, exercise.setup = "prepare-MovieData-rating-mpaa-geom_boxplot"}
+# paste labs_boxplot_mpaa_rating code below: 
+
+# initialize the plot
+MovieData %>% ggplot() + 
+    # add aesthetics
+    aes(x = rating, y = mpaa) + 
+    # add geom_boxplot
+    
+    # add labels
+    
+```
+
+*How would you describe the relationship between IMDB ratings and MPAA ratings?*
+
+We can see the position of the box moves (i.e. the rating gets more positive) across the three levels of `mpaa`.
+
+Now we're going to graph two numerical variables: `length` and `rating`. 
+
+## Numeric vs. numeric relationships 
 
 ```{r prepare-MovieData-geom-point, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -377,96 +405,91 @@ labs_point_rating_length <- labs(
         y = "Average IMDB User Rating")
 ```
 
-Add the `geom_point()` layer and `labs_point_rating_length` labels below:
+Add the `geom_point()` layer and `labs_point_rating_length` labels and store the graph in `ggp_length_rating`:
 
 ```{r MovieData-geom-point, exercise=TRUE, exercise.setup = "prepare-MovieData-geom-point"}
 # paste labs_point_rating_length code below: 
 
 # initialize the plot
-MovieData %>% ggplot() + 
+ggp_length_rating <- MovieData %>% ggplot() + 
     # add length to the x
     aes(x = length, y = rating) + 
     # add geom_point
     
     # add labels
-    
+
+# print the ggp_length_rating plot below
 ```
 
 *How would you describe the relationship between movie length and IMDB ratings?*
 
-## Map color
-
 We've looked at the relationship between movie length and average IMDB rating, and there doesn't seem to be a strong relationship. 
-
-```{r}
-MovieData %>% ggplot() + 
-    # add length to the x
-    aes(x = length, y = rating) + 
-    geom_point()
-```
 
 If there was a strong relationship between been, the points would look more like the data below:
 
-```{r rnorm_multi, include=FALSE}
-source(file = "https://bit.ly/3oMbnNt")
-CorrData08 <- rnorm_multi(n = 1000,  
-                          mu = c(6, 6, 240), 
-                          sd = c(1, 1, 3), 
-                          r = c(0.6, 0.4, 0.8), 
-                          varnames = c("Z", "rating", "length"),
-                          empirical = TRUE) %>% 
-                          select(-Z)
-fs::dir_create("data/05-ggplot2-01/")
-readr::write_csv(CorrData08, "data/05-ggplot2-01/CorrData08.csv")
-CorrData06 <- rnorm_multi(n = 1000,  
-                          mu = c(6, 6, 240), 
-                          sd = c(1, 1, 3), 
-                          r = c(0.6, 0.4, 0.6), 
-                          varnames = c("Z", "rating", "length"),
-                          empirical = TRUE) %>% 
-                          select(-Z)
-readr::write_csv(CorrData06, "data/05-ggplot2-01/CorrData06.csv")
-CorrData04 <- rnorm_multi(n = 1000, 
-            mu = c(6, 6, 240), 
-            sd = c(1, 1, 3), 
-            r = c(0.6, 0.4, 0.4), 
-            varnames = c("Z", "rating", "length"),
-            empirical = TRUE) %>% 
-            select(-Z)
-readr::write_csv(CorrData04, "data/05-ggplot2-01/CorrData04.csv")
-```
-
-```{r CorrData08, echo=FALSE}
-CorrData08 %>% 
-    ggplot(aes(x = length, y = rating)) + 
-    geom_point() + 
-    labs(title = "Average IMDB user rating by movie length",
+```{r prepare-CorrData08, include=FALSE}
+CorrData08 <- vroom::vroom("https://bit.ly/3DFPp4X", delim = ",")
+labs_corr08 <- labs(
+        title = "Average IMDB user rating by movie length",
         subtitle = "Simulated correlation = 0.8",
         caption = "made with geom_point()",
         x = "Movie length (in minutes)",
         y = "Average IMDB User Rating")
-```
 
-
-```{r cor-06, echo=FALSE}
-CorrData06 %>% 
+ggp_corr08_data <- CorrData08 %>% 
     ggplot(aes(x = length, y = rating)) + 
     geom_point() + 
-    labs(title = "Scatter-plot for correlated data", 
-         subtitle = "Correlation = 0.6")
+    labs_corr08
 ```
 
-```{r cor-04, echo=FALSE}
-CorrData04 %>% 
+```{r CorrData08, exercise=TRUE, exercise.setup = "prepare-CorrData08"}
+ggp_corr08_data
+```
+
+The strength of a relationship is measured with the correlation coefficient (r), and it ranges from −1 - 1. The graph above shows a correlation of `0.8`, which is strong. As we can see, as `length` goes up, so does `rating`. 
+
+The graph below shows a correlation of `0.6`. As we can see, the spread of the data isn't as tight (it looks more like a football). It's harder to say that length and rating go up (or down) together.  
+
+```{r prepare-CorrData06, include=FALSE}
+CorrData06 <- vroom::vroom("https://bit.ly/3x4rFoy", delim = ",")
+labs_corr06 <- labs(
+        title = "Average IMDB user rating by movie length",
+        subtitle = "Simulated correlation = 0.6",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating")
+
+ggp_corr06_data <- CorrData06 %>% 
     ggplot(aes(x = length, y = rating)) + 
     geom_point() + 
-    labs(title = "Scatter-plot for correlated data", 
-         subtitle = "Correlation = 0.4")
+    labs_corr06
 ```
 
+```{r CorrData06, exercise=TRUE, exercise.setup = "prepare-CorrData06"}
+ggp_corr06_data
+```
 
+The plot below shows a weak correlation (`0.4`), and this looks almost identical to the `ggp_length_rating` plot. 
 
+```{r prepare-CorrData04, include=FALSE}
+CorrData04 <- vroom::vroom("https://bit.ly/3HDhtZc", delim = ",")
+labs_corr04 <- labs(
+        title = "Average IMDB user rating by movie length",
+        subtitle = "Simulated correlation = 0.6",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating")
+ggp_corr04_data <- CorrData04 %>% 
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point() + 
+    labs_corr04
+```
 
+```{r cor-CorrData04, exercise=TRUE, exercise.setup = "prepare-CorrData04"}
+ggp_corr04_data
+```
+
+## Map color
 
 ```{r prepare-MovieData-map-color, include=FALSE}
 source("https://bit.ly/3c6DfGe")
