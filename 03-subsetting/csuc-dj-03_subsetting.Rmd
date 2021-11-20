@@ -1,11 +1,16 @@
 ---
-comment: "*subsetting data in R*"
+title: "Subsetting data in R"
 output: 
-  html_document:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
     includes:
       in_header: resizer.html
-       
 runtime: shiny_prerendered
+description: >
+  Subsetting objects in R allows you to extract individual elements from any 
+  data object.
 ---
 
 ```{r setup, include = FALSE}
@@ -22,6 +27,8 @@ There are three primary methods for subetting in R:
 1. single brackets: `[`  
 2. double brackets: `[[`  
 3. dollar sign: `$`  
+
+## Subsetting vectors 
 
 ```{r prepare-num_vec, include=FALSE}
 num_vec <- c(2, 9, 4, 3, 7)
@@ -100,6 +107,7 @@ str(num_vec[[2:4]])
 
 Double brackets are usually reserved for subsetting more complex objects (like `data.frame`s or `list`s).
 
+## Subsetting `tibble`s
 
 ```{r prepare-MovieTibble-str, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -156,6 +164,8 @@ str(MovieTibble[ 5, ])
 # single column index
 str(MovieTibble[ , 3])
 ```
+
+## Subsetting `data.frame`s
 
 However, if we convert `MovieTibble` to a `data.frame` with `as.data.frame()`, a single row index returns a `data.frame` (with all seven columns), but a single column index returns a vector (of all rows): 
 

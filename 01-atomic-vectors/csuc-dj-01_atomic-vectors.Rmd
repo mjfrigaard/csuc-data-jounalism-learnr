@@ -1,0 +1,237 @@
+---
+title: "*In introduction to atomic vectors*"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
+    includes:
+      in_header: resizer.html
+runtime: shiny_prerendered
+description: >
+  Learn about atomic vectors, the basic data types in R.
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload, exercise.cap = "Vectors in R")
+```
+
+> "*The fundamental data type in R is the vector.*" - THE ART OF R PROGRAMMING, 2011 by Norman Matloff.
+
+## Atomic vectors 
+
+"Atomic" here means *'of or forming a single irreducible unit or component in a larger system.'* Atomic vectors are the basic building blocks of data objects in R. 
+
+There are four types of atomic vectors: logical, integer, double, and character.
+
+### Logical vectors
+
+Logical vectors can only take two values: `TRUE` and `FALSE`, and we can create a logical vector using the `c()` function (which stands for 'combine').
+
+```{r vector_logical, exercise=TRUE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+# print 'vector_logical' below
+
+```
+
+```{r prepare-vector_logical-typeof, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+```
+
+We're going to be using the `class()` and `typeof()` functions to investigate these different objects. 
+
+Check the type and class of `vector_logical` with `typeof()` and `class()`
+
+```{r vector_logical-typeof, exercise=TRUE, exercise.setup = "prepare-vector_logical-typeof"}
+# check the type of 'vector_logical' below
+typeof()
+# check the class of 'vector_logical' below
+class()
+```
+
+Logical vectors are handy because they add up to the number of `TRUE` values (`TRUE` = 1, `FALSE` = 0).
+
+```{r prepare-vector_logical-sum, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3, 7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+Get the `sum()` of `vector_logical` below:
+
+```{r sum-vector_logical, exercise=TRUE, exercise.setup = "prepare-vector_logical-sum"}
+# check the sum of 'vector_logical' below
+sum()
+```
+
+Logical vectors are also helpful for subsetting, which we will cover in future sections. 
+
+We can also test a vector to see if it's logical with `is.logical()`
+
+```{r prepare-vector_logical-test-is-logical, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3, 7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+```{r vector_logical-test-is-logical, exercise=TRUE, exercise.setup = "prepare-vector_logical-test-is-logical"}
+# test 'vector_logical' below
+is.logical()
+```
+
+Each vector comes with it's own testing function.
+
+## Numeric vectors 
+
+There are two types of numeric vectors, double and integer.
+
+### Integer vectors
+
+Integer vectors are whole numbers, and need to be created with an `L` behind each number. 
+
+```{r integer, exercise=TRUE}
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+# type 'vector_integer' on the line below and click Run Code again
+
+```
+
+```{r prepare-typeof-vector_integer, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3, 7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+Check the type of `vector_integer` with `typeof()` and `class()`
+
+```{r typeof-vector_integer, exercise=TRUE, exercise.setup = "prepare-typeof-vector_integer"}
+# check type of vector_integer
+typeof()
+# check class of vector_integer
+class()
+```
+
+### Double vectors
+
+Double vectors can have whole numbers *and* decimal points. 
+
+```{r vector_double, exercise=TRUE}
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+# type 'vector_double' on the line below and click Run Code again
+
+```
+
+```{r prepare-vector_double, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+Check the type of `vector_double` with `typeof()`.
+
+```{r typeof-vector_double, exercise=TRUE, exercise.setup = "prepare-vector_double"}
+# check type of vector_double
+typeof()
+```
+
+### Testing numeric vectors
+
+We can test integer and double vectors with `is.numeric()`:
+
+```{r prepare-is-numeric, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+Test the `vector_double` and `vector_integer` with `is.numeric()` below
+
+```{r is-numeric, exercise=TRUE, exercise.setup = "prepare-is-numeric"}
+# check vector_integer with is.numeric()
+is.numeric()
+# check vector_double with is.numeric()
+is.numeric()
+```
+
+Because these only test if the vector is numeric, we can be more specific with the `is.integer()` function. 
+
+Check `vector_integer` with `is.integer()`
+
+```{r prepare-is-integer-vector_integer, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+```{r is-integer-vector_integer, exercise=TRUE, exercise.setup = "prepare-is-integer-vector_integer"}
+# check vector_integer with is.integer()
+is.integer()
+```
+
+Check `vector_double` with `is.double()`
+
+```{r prepare-is-double-vector_double, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+```{r is-double-vector_double, exercise=TRUE, exercise.setup = "prepare-is-double-vector_double"}
+# check vector_double with is.double()
+is.double()
+```
+
+## String vectors
+
+The final kind of atomic vector is a character (or string) vector, and these contain text information:
+
+```{r vector_string, exercise=TRUE}
+# type 'vector_string' on the line below and click Run Code again
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+
+```
+
+```{r prepare-typeof-vector_string, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+Check the type of `vector_string` below:
+
+```{r typeof-vector_string, exercise=TRUE, exercise.setup = "prepare-typeof-vector_string"}
+# check type of vector_string
+typeof()
+```
+
+Check `vector_string` with `is.character()`
+
+```{r prepare-is-character-vector_string, include=FALSE}
+vector_logical <- c(TRUE, FALSE, TRUE, FALSE, FALSE)
+vector_double <- c(3.5, 0.7, 29, 4, 6.78)
+vector_integer <- c(4L, 21L, 2L, 3L, 10L)
+vector_string <- c("hat", "chair", "cat", "dog", "book")
+```
+
+```{r is-character-vector_string, exercise=TRUE, exercise.setup = "prepare-is-character-vector_string"}
+# check vector_string with is.character()
+is.character()
+```
+
+## Conclusion
+
+We've covered atomic vectors in these exercises--next up we will review R's S3 atomic vectors.
+
+<div data-iframe-height></div>

@@ -5,9 +5,10 @@ account: mjfrigaard
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5119358
-bundleId: 5249326
+bundleId: 5255492
 url: https://mjfrigaard.shinyapps.io/csuc-dj-02_data-frames/
-when: 1636856739.78876
-lastSyncTime: 1636856739.78878
+when: 1637011782.01101
+lastSyncTime: 1637011782.01102
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: csuc-dj-02_data-frames.html

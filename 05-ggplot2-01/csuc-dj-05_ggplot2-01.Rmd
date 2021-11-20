@@ -1,0 +1,419 @@
+---
+title: "Data visualization R with ggplot2 (part 1)"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
+    includes:
+      in_header: resizer.html
+runtime: shiny_prerendered
+description: >
+  Introduction to data visualization with ggplot2.
+---
+
+```{r setup, include = FALSE}
+# csuc-dj-05_ggplot2-01
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+library(faux)
+knitr::opts_chunk$set(error = TRUE,
+                      upload.fun = imgur_upload, 
+          exercise.cap = "introduction to ggplot2",
+                      warning = FALSE, 
+                      message = FALSE, 
+                      tibble.max_extra_cols = 6, 
+                      tibble.width = 60)
+options(scipen = 999999999)
+```
+
+```{r prepare-MovieData, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+```
+
+These exercises will cover an introduction to data visualization using `ggplot2`. More information is available in the [lessons](https://mjfrigaard.github.io/csuc-data-journalism/lessons/wk3-01_intro-to-data-viz-ggp2-part-01.html) and [slides.](https://mjfrigaard.github.io/csuc-data-journalism/slides/wk-04.0-data-viz-intro.html#1)
+
+Use the code block below to explore the `MovieData` dataset by clicking on the **Run Code** button. Use the `str()` and `glimpse()` functions.
+
+```{r MovieData, exercise=TRUE, exercise.setup = "prepare-MovieData"}
+# print MovieData below
+MovieData
+```
+
+## `ggplot2` grammar 
+
+Objectives: 
+
+1) Introduction to the grammar of graphics  
+2) Identifying graph aesthetics (`x`, `y`, `color`, and `fill`)  
+3) Recognizing and using geoms (`geom_histogram()`, `geom_point()`, `geom_bar()`, etc.)  
+4) Faceting   
+
+How the layered grammar of graphics works:
+
+- Graphs are initialized with `ggplot()`
+- Variables are mapped to aesthetics (`x`, `y`, `fill`, `color`, etc)  
+
+```{r ggplot2-template, echo=FALSE, out.height='70%', out.width='70%'}
+knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/04-ggplot2-01/img/ggplot2-template.png")
+```
+
+After the graph has been initialized, we add geoms (which are linked to underlying statistics)
+
+```{r ggplot2-template-01, echo=FALSE, out.height='95%', out.width='95%'}
+knitr::include_graphics("https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/04-ggplot2-01/img/ggplot2-template-01.png")
+```
+
+
+## Initialize the plot
+
+We're going to start by visualizing the `rating` variable using a `geom_histogram()`
+
+Initialize the plot with `ggplot2` and assign this output to `base_layer`
+
+```{r prepare-MovieData-base-layer, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+```
+
+```{r MovieData-base-layer, exercise=TRUE, exercise.setup = "prepare-MovieData-base-layer", fig.width = 6}
+# initialize the plot and save as base_layer
+base_layer <- MovieData %>% 
+    ggplot()
+# print base_layer
+```
+
+## Map aesthetics
+
+We can see `base_layer` is a nice, blank, canvas. We'll add the `rating` column to the `x` aesthetic. 
+
+```{r prepare-MovieData-x-layer, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+# base_layer ----
+base_layer <- MovieData %>% 
+    ggplot()
+```
+
+```{r MovieData-x-layer, exercise=TRUE, exercise.setup = "prepare-MovieData-x-layer", fig.width = 6}
+x_layer <- base_layer + 
+    aes(x = rating)
+# print x_layer
+```
+
+We can see the `x` axis is scaled to the `rating` variable because the numbers along the bottom match the `range()` of the values in `rating`. 
+
+```{r prepare-MovieData-rating-range, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+```
+
+```{r MovieData-rating-range, exercise=TRUE, exercise.setup = "prepare-MovieData-rating-range"}
+# use range() to get the minimum and maximum values for MovieData$rating
+range()
+```
+
+## Add layers with `+`
+
+We're going to add a `geom_histogram()` layer and **labels**:
+
+```{r prepare-geom_histogram-layer, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+# base_layer ----
+base_layer <- MovieData %>% 
+    ggplot()
+# x_layer ----
+x_layer <- base_layer + 
+    aes(x = rating)
+```
+
+Use the code below to create your labels: 
+
+```{r labs_histogram, eval=FALSE}
+labs_histogram <- labs(
+        title = "Distribution of average IMDB user rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)", 
+        caption = "made with geom_histogram()",
+        x = "IMDB Rating", 
+        y = "Count")
+```
+
+Add a `geom_histogram()` and `labs_histogram` to `x_layer` using plus symbols (`+`).
+
+```{r geom_histogram-layer, exercise=TRUE, exercise.setup = "prepare-geom_histogram-layer"}
+# paste 'labs_histogram' code below:
+
+x_layer + 
+    # <- add geom_histogram() to x_layer here
+    # <- add labs_histogram layer here (don't forget '+' above!)
+```
+
+The distribution for `rating` looks nearly [normal](https://en.wikipedia.org/wiki/Normal_distribution), but we can get a better look at this distribution with a box-plot. 
+
+## Using geoms
+
+In the previous exercise we added a `geom_histogram()` layer. One of the many useful aspects of the `ggplot2` syntax is the ability to change your graph completely by just swapping geom functions (this is whats meant by *infinitely extensible*).
+
+```{r prepare-geom_boxplot-layer, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+# base_layer ----
+base_layer <- MovieData %>% 
+    ggplot()
+# x_layer ----
+x_layer <- base_layer + 
+    aes(x = rating)
+```
+
+Use the code below to create your box-plot labels:
+
+```{r labs_boxplot_rating, eval=FALSE}
+labs_boxplot_rating <- labs(
+        title = "Distribution of average IMDB user rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "IMDB Rating")
+```
+
+```{r geom_boxplot-layer, exercise=TRUE, exercise.setup = "prepare-geom_boxplot-layer"}
+# paste 'labs_boxplot_rating' code below:
+
+x_layer + 
+    # <- add geom_boxplot() to x_layer here
+    # <- add labs_boxplot_rating layer here
+```
+
+The vertical line in the center of the box-plot graph tells us the median (or middle) value for the `rating` variable. The left-hand edge of the box (called the lower hinge) is the first quartile (or 25th percentile), and the right-hand edge of the box (called the upper hinge) is the third quartile (or 75th percentile). Think of these 'higher' and 'lower' values for `rating`.
+
+The lines extending horizontally from the box are called 'whiskers', and these represent the 'low' and 'high' values in `rating` (not the minimum and maximum though!). 
+
+The points on the far-left hand side of the box-plot (beyond the whiskers) are called 'outliers' because they're *much lower* (or higher) than the other values for `rating`.
+
+## Confirm statistics
+
+We can confirm all the numbers in the box-plot by passing ` MovieData$rating` to  `skimr::skim()`:
+
+```{r prepare-skimr-rating, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+```
+
+```{r skimr-rating, exercise=TRUE, exercise.setup = "prepare-skimr-rating"}
+# pass MovieData$rating to skimr::skim()
+skimr::skim()
+```
+
+Click on **Run Code** below to compare the `skimr` output to the boxplot we created above:
+
+```{r prepare-ggp_boxplot_rating-skim, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+# MovieData ----
+MovieData <- filter(MovieData, !is.na(budget))
+# base_layer ----
+base_layer <- MovieData %>% 
+    ggplot()
+# x_layer ----
+x_layer <- base_layer + 
+    aes(x = rating) 
+# labels
+labs_boxplot_rating <- labs(
+        title = "Distribution of average IMDB user rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "IMDB Rating", 
+        y = "")
+# boxplot ----
+ggp_boxplot_rating <- x_layer + 
+    geom_boxplot() + # <- add geom_boxplot() to x_layer here
+    labs_boxplot_rating # <- add labs_boxplot_rating layer here
+```
+
+```{r ggp_boxplot_rating-skim, exercise=TRUE, exercise.setup = "prepare-ggp_boxplot_rating-skim"}
+# print ggp_boxplot_rating below
+```
+
+The `p50` is the median (or middle value). `p25` and `p75` are the 25th and 75th percentiles (also called the first and third quartiles). Learn more about box-plots in this great [medium post](https://medium.com/dayem-siddiqui/understanding-and-interpreting-box-plots-d07aab9d1b6c). 
+
+## Numeric vs. categorical relationships
+
+Box-plots are also great because they take up less room than histograms or density plots, which means we can see how a continuous variable like `rating` is distributed across a categorical variable (like `mpaa`). 
+
+```{r prepare-MovieData-mpaa-factor, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+Use the code below to create your labels: 
+
+```{r labs_boxplot_mpaa_rating, eval=FALSE}
+labs_boxplot_mpaa_rating <- labs(
+        title = "Average IMDB user rating by MPAA Rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "IMDB Rating", 
+        y = "MPAA Rating")
+```
+
+I've initialized the plot and added the aesthetics. Add a `geom_boxplot()` layer and the labels.
+
+```{r MovieData-mpaa-factor, exercise=TRUE, exercise.setup = "prepare-MovieData-mpaa-factor"}
+# paste labs_boxplot_mpaa_rating code below: 
+
+# initialize the plot
+MovieData %>% ggplot() + 
+    # add aesthetics
+    aes(x = rating, y = mpaa) + 
+    # add geom_boxplot
+    
+    # add labels
+    
+```
+
+*How would you describe the relationship between IMDB ratings and MPAA ratings?*
+
+Now we're going to graph two numerical variables: `length` and `rating`. 
+
+## Exploring columns
+
+The code below uses `dplyr::select()`s these variables from `MovieData` and gets a `skim()` (summary statistics). 
+
+```{r prepare-MovieData-length-rating-skim, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+Click **Run Code** and view the results:
+
+```{r MovieData-length-rating-skim, exercise=TRUE, exercise.setup = "prepare-MovieData-mpaa-factor"}
+MovieData %>% 
+    dplyr::select(length, rating) %>% 
+    skimr::skim()
+```
+
+## Checking our expectations
+
+We can see the median movie length is around 90 minutes long, the shortest movie is 7 minutes, and the longest movie is 251 minutes. 
+
+Use the code below to create a box-plot of `length` so we can get a better understanding of this variables distribution. 
+
+```{r prepare-MovieData-length-boxplot, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+```{r labs_boxplot_length, eval=FALSE}
+labs_boxplot_length <- labs(
+        title = "Average IMDB user rating by MPAA Rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_boxplot()",
+        x = "Movie length (in minutes)")
+```
+
+```{r MovieData-length-boxplot, exercise=TRUE, exercise.setup = "prepare-MovieData-length-boxplot"}
+# paste labs_boxplot_length code below: 
+
+# initialize the plot
+MovieData %>% ggplot() + 
+    # add length to the x
+    aes(x = ) + 
+    # add geom_boxplot
+    
+    # add labels
+    
+```
+
+Based on what we saw in the `skim()` output, does the box-plot match our expectations?
+
+## Numeric X vs. Y relationships 
+
+```{r prepare-MovieData-geom-point, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+MovieData <- mutate(MovieData, mpaa = factor(mpaa, 
+                                levels = c("PG", "PG-13", "R"), 
+                                labels = c("PG", "PG-13", "R")))
+```
+
+We're going to plot `rating` as a function of `length`. Both of these variables are numeric, and we've explored their summary statistics using the `skim()` function and box-plots. 
+
+Now we're going to plot both columns using a `geom_point()` (scatter-plot) to see if there is a sweet spot where movies aren't too long or too short. First we'll build the labels for the graph and store these in `labs_point_rating_length`. 
+
+```{r labs_point_rating_length, eval=FALSE}
+labs_point_rating_length <- labs(
+        title = "Average IMDB user rating by movie length",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating")
+```
+
+Add the `geom_point()` layer and `labs_point_rating_length` labels below:
+
+```{r MovieData-geom-point, exercise=TRUE, exercise.setup = "prepare-MovieData-geom-point"}
+# paste labs_point_rating_length code below: 
+
+# initialize the plot
+MovieData %>% ggplot() + 
+    # add length to the x
+    aes(x = length, y = rating) + 
+    # add geom_point
+    
+    # add labels
+    
+```
+
+*How would you describe the relationship between movie length and IMDB ratings?*
+
+## Map color
+
+We've looked at the relationship between movie length and average IMDB rating, and there doesn't seem to be a strong relationship. If there had been, the points would look like 
+
+```{r rnorm_multi}
+CorrData <- rnorm_multi(n = 100, 
+                        mu = c(0, 20, 20),
+                        sd = c(1, 5, 5),
+                        r = c(0.5, 0.5, 0.25), 
+                        varnames = c("A", "B", "C"),
+                        empirical = FALSE)
+```
+
+
+```{r prepare-MovieData-map-color, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+```
+
+
+
+<div data-iframe-height></div>

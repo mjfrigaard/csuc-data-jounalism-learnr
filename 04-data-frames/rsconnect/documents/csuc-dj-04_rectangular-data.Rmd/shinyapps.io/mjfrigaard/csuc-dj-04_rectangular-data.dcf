@@ -1,0 +1,14 @@
+name: csuc-dj-04_rectangular-data
+title: csuc-dj-04_rectangular-data
+username:
+account: mjfrigaard
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5169006
+bundleId: 5273120
+url: https://mjfrigaard.shinyapps.io/csuc-dj-04_rectangular-data/
+when: 1637392157.88889
+lastSyncTime: 1637392157.8889
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: csuc-dj-04_data-frames.html|csuc-dj-04_rectangular-data.html

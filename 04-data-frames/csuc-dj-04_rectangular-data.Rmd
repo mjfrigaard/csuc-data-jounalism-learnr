@@ -1,14 +1,20 @@
 ---
-comment: "*Rectangular data in R*"
+title: "*Rectangular data in R*"
 output: 
-  html_document:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
     includes:
       in_header: resizer.html
-       
 runtime: shiny_prerendered
+description: >
+  Learn about data.frames and tibbles, two forms of rectangular data in R.
 ---
 
 ```{r setup, include = FALSE}
+# https://mjfrigaard.shinyapps.io/csuc-dj-04_rectangular-data/
+# 04-rectangular-data
 library(learnr)
 library(tidyverse)
 library(skimr)
@@ -18,6 +24,8 @@ knitr::opts_chunk$set(error = TRUE,
 ```
 
 Most of the time we're encountering data in tables (like spreadsheets). In R, tabular data are stored in `data.frame`s or `tibble`s. 
+
+## `data.frame`s
 
 The code below builds a `data.frame` with the vectors we created in the previous exercise. Click on the **Run Code** button below:
 
@@ -59,6 +67,8 @@ str()
 
 We can see `str()` prints the number of rows (`5 obs.`) and columns (`4 variables:`), and a preview of it's contents. 
 
+## `tibble`s
+
 In this course, we will primarily use `tibble`s, which are similar to `data.frame`s. The code below creates a `tibble` with the same content as `MyDataFrame`. 
 
 ```{r MyTibble, exercise=TRUE}
@@ -91,6 +101,8 @@ str()
 ```
 
 The output from `str(MyTibble)` prints the number of rows x columns (`[5 × 4]`) and the *class* (`S3: tbl_df/tbl/data.frame`), and a preview of it's contents. 
+
+## Printing
 
 `tibble`s print to the screen a little nicer to the screen. Print `MyTibble` in the code chunk below: 
 
@@ -144,6 +156,8 @@ MyTibble <- structure(list(
     class = c("tbl_df", "tbl", "data.frame"), 
     row.names = c(NA, -5L))
 ```
+
+## Type?
 
 ```{r MyDataFrame-MyTibble-typeof, exercise=TRUE, exercise.setup = "prepare-MyDataFrame-MyTibble-typeof"}
 # place MyDataFrame in typeof()

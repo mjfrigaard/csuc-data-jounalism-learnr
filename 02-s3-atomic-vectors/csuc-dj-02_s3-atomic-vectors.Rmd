@@ -1,0 +1,584 @@
+---
+title: "*An introduction to S3 atomic vectors*"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
+    includes:
+      in_header: resizer.html
+runtime: shiny_prerendered
+description: >
+  Learn about factors, dates, date-times and difftimes.
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload, exercise.cap = "S3 Vectors in R")
+```
+
+> "*Every S3 object is built on top of a base type, and often stores additional information in other attributes.*" - Advanced R (2019), Second Edition, Hadley Wickham
+
+S3 vectors include factors, dates, date-times, difftimes.
+
+## Recreate objects in R
+
+In order to understand the structure of an object in R, we can use the `dput()` function to view how R 'recreates' this object. 
+
+We've created two datasets in the code block below, `TestDataFrame` and `TestTibble`. Use `str()` to view their contents. 
+
+```{r prepare-TestDataFrame-TestTibble, include=FALSE}
+TestDataFrame <- data.frame(
+    name = c("Pete", "Bob","Jane","Emily","Fran"),
+    sex = c("Male", "Male","Female", "Female","Female"),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble <- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        "Pete",   "Male",     78,   42,
+         "Bob",   "Male",     88,   38,
+        "Jane", "Female",     92,   26,
+       "Emily", "Female",     89,   30,
+        "Fran", "Female",     84,   35)
+```
+
+```{r TestDataFrame-TestTibble, exercise=TRUE, exercise.setup = "prepare-TestDataFrame-TestTibble"}
+str(TestDataFrame)
+str(TestTibble)
+```
+
+Now use the `dput()` to view how R 'recreates' these objects. 
+
+```{r prepare-TestDataFrame-TestTibble-dput, include=FALSE}
+TestDataFrame <- data.frame(
+    name = c("Pete", "Bob","Jane","Emily","Fran"),
+    sex = c("Male", "Male","Female", "Female","Female"),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble <- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        "Pete",   "Male",     78,   42,
+         "Bob",   "Male",     88,   38,
+        "Jane", "Female",     92,   26,
+       "Emily", "Female",     89,   30,
+        "Fran", "Female",     84,   35)
+```
+
+```{r TestDataFrame-TestTibble-dput, exercise=TRUE, exercise.setup = "prepare-TestDataFrame-TestTibble-dput"}
+dput(TestDataFrame)
+dput(TestTibble)
+```
+
+We can see the output from `dput(TestDataFrame)` tells us `TestDataFrame` is a list comprised of four vectors (`name`, `sex`, `score`, and `age`), of class `data.frame`, 
+
+The output of `dput(TestTibble)` tells us `TestTibble` is also a list with four vectors (`name`, `sex`, `score`, and `age`), but `TestTibble` has multiple classes: 
+
+`class = c("tbl_df", "tbl", "data.frame")`
+
+We can use the output from `dput()` to recreate each object. Copy the output from `dput()` above and paste it below to recreate `TestDataFrame` and `TestTibble`. 
+
+```{r recreate-dput, exercise=TRUE}
+TestDataFrame2 <- 
+TestTibble2 <- 
+# check the structure of TestDataFrame2
+str(TestDataFrame2)
+# check the structure of TestTibble2
+str(TestTibble2)
+# are they identical to the original TestDataFrame and TestTibble?
+```
+
+So far, we've used `str()`, `typeof()`, and `class()` to interrogate the contents and structure of R objects. `dput()` is a way to combine all three (and it gives you the code to 'recreate' the object, which always comes in handy!)
+
+
+## Factors 
+
+Factors are S3 vectors which hold a distinct list of labels (or levels). For example, imagine we have a character vector with a given set of responses, like the one below: 
+
+```{r char_vector, exercise=TRUE}
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+# print the char_vector below
+
+```
+
+You can create factors using `factor()`. Factors give references and levels to categorical vectors. The correct order for `char_vector` is:
+
+`Never` < `Rarely` < `Sometimes` < `Often` < `Always`
+
+```{r prepare-fctr_vector, include=FALSE}
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+```
+
+Below we convert `char_vector` into a factor vector (`fctr_vector`) using `factor()`. 
+
+Check the levels of `fctr_vector` with `levels()`
+
+```{r fctr_vector, exercise=TRUE, exercise.setup = "prepare-fctr_vector"}
+fctr_vector <- factor(x = char_vector)
+# check levels
+levels()
+```
+
+## Factor levels 
+
+We need to set the levels in `fctr_vector` in the correct order, which we can do with the `levels` argument. By default, the levels are assigned alphabetically (using unique values only).
+
+```{r prepare-fctr_vector-levels, include=FALSE}
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+```
+
+Create `fctr_vector` again from `char_vector`, but this time place each level in it's correct place with the `levels` argument (inside `c()`):
+
+`Never` < `Rarely` < `Sometimes` < `Often` < `Always`
+
+```{r fctr_vector-levels, exercise=TRUE, exercise.setup = "prepare-fctr_vector-levels"}
+# place levels in the correct order
+fctr_levels <- c("", "", "", "", "")
+# place fctr_levels in the levels argument 
+fctr_vector <- factor(x = char_vector, 
+                    levels = )
+# confirm levels 
+levels()
+```
+
+
+```{r prepare-fctr_vector-dput, include=FALSE}
+# char_vector
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+# levels
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+# fctr_levels
+fctr_vector <- factor(x = char_vector, 
+                    levels = fctr_levels)
+```
+
+We can check the structure of `fctr_vector` with `dput()`
+
+```{r fctr_vector-dput, exercise=TRUE, exercise.setup = "prepare-fctr_vector-dput"}
+dput(fctr_vector)
+```
+
+The output of `dput()` tells us a lot about how R deals with with factors:
+
+1. Each unique level value gets assigned an integer (in this case, 1-5)   
+2. The levels have a corresponding `.Label` value    
+3. The class of `fctr_vector` is `"factor"`   
+
+The integer values are printed in the order they were supplied in `char_vector`:
+
+`c(1L, 3L, 5L, 2L, 4L)`
+
+```{r prepare-print-char_vector, include=FALSE}
+# char_vector
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+```
+
+```{r print-char_vector, exercise=TRUE, exercise.setup = "prepare-print-char_vector"}
+# check against the order in char_vector
+char_vector
+```
+
+`1L` = `"Never"`, `3L` = `"Sometimes"`, `5L` = `"Always"`, `2L` = `"Rarely"`, `4L` = `"Often"`
+
+Note that the number of levels in a factor are distinct, so factors come in handy for character strings with specific and repeated categories. 
+
+Consider the following character vectors: `mult_char_vector` and `fctr_levels`
+
+```{r prepare-mult-char_vector, include=FALSE}
+# mult_char_vector
+mult_char_vector <- c("Never", "Always", "Sometimes", "Often",
+                 "Always", "Rarely", "Often", "Rarely")
+# fctr_levels (in order)
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+```
+
+We've created the following vectors. 
+
+```r
+mult_char_vector <- c("Never", "Always", "Sometimes", "Often",
+                 "Always", "Rarely", "Often", "Rarely")
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+```
+
+Use the code block below to example the length of `mult_char_vector`, `fctr_levels` and the structure of `fctr_mult_vector` (after supplying `mult_char_vector` and `fctr_levels` to `factor()`). 
+
+```{r mult-char_vector, exercise=TRUE, exercise.setup = "prepare-mult-char_vector"}
+# fctr_levels
+fctr_mult_vector <- factor(x = mult_char_vector, 
+                    levels = fctr_levels)
+# check length() of mult_char_vector
+
+# check length() of fctr_levels
+
+# check structure (str()) of fctr_mult_vector
+
+# How many levels are in fctr_mult_vector?
+```
+
+We can see that despite the `length()` of `mult_char_vector` being `8`, the number of levels in the `fctr_mult_vector` is constrained to `5` (the length of `fctr_levels`).
+
+## Factor labels 
+
+The `labels` argument can also be used to assign either 1) character values in the same order as the `levels`, or 2) a single character string that gets assigned a numerical suffix for each unique value of `levels`. 
+
+The code block creates three factors: 
+
+1. `fctr_with_levels`, which uses `char_vector` as `x` and `fctr_levels` as `levels`     
+2. `fctr_with_labels`, which uses `char_vector` as `x` and `fctr_levels` as `levels`, and `fctr_labels` as `labels`   
+3. `fctr_chr_string`, which uses `char_vector` as `x` and `fctr_levels` as `levels`, `chr_string` as `labels`  
+
+Print each of the factors to the screen and investigate them with `dput()`
+
+```{r prepare-fctr_labels, include=FALSE}
+# fctr_levels
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+# fctr_labels
+fctr_labels <- c("NEVER", "RARELY", "SOMETIMES", 
+                "OFTEN", "ALWAYS")
+# char_vector
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+
+# character string length 1
+chr_string <- c("FACTOR LABEL ")
+
+# create fctr_with_levels
+fctr_with_levels <- factor(x = char_vector, 
+                        levels = fctr_levels)
+
+# create fctr_with_labels
+fctr_with_labels <- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = fctr_labels)
+
+# fctr_chr_string
+fctr_chr_string <- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = chr_string)
+```
+
+
+```{r fctr_labels, exercise=TRUE, exercise.setup = "prepare-fctr_labels"}
+# use ls() to print each factor to the screen
+ls()
+# use dput() to view each factor
+
+# how are these factors different?
+```
+
+## Ordered factors 
+
+Sometimes it's necessary to force the factor levels into a specific order, which we can do by setting `ordered` to `TRUE`. Use the code block below to create `fct_ordered` with `char_vector` and `fctr_levels`. Print `fctr_levels` and use `dput()` to investigate it's structure. 
+
+```{r prepare-fct_ordered, include=FALSE}
+# char_vector
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+# fctr_levels
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+```
+
+
+```{r fct_ordered, exercise=TRUE, exercise.setup = "prepare-fct_ordered"}
+# create fct_ordered
+fct_ordered <- factor(x = char_vector, 
+                      levels = fctr_levels, 
+                      ordered = )
+# print fct_ordered 
+
+# dput() fct_ordered
+
+# What is different about the structure of fct_ordered?
+```
+
+Ordered factors are helpful whenever you have a variable with ranked categories (like `high` - `medium` - `low`).
+
+## Dates 
+
+We're going to cover three date formats in R: `"Date"`, `"POSIXlt"` and `"POSIXct"`. 
+
+### ISO-8601
+
+Dates come in a variety of formats, but only one correct format, and that's the [ISO-8601 format](https://en.wikipedia.org/wiki/ISO_8601), or `YYYY-MM-DD`. 
+
+Date storage formats have become such an issue, there's even an xkcd comic about it: 
+
+```{r iso_8601.png, echo=FALSE}
+knitr::include_graphics(path = "https://imgs.xkcd.com/comics/iso_8601.png")
+```
+
+The `as.Date()` function converts character vectors into a date vector, provided we supply the dates in the `YYYY-MM-DD` format. Create the `date_vector` below and view it's structure with `str()`.
+
+```{r date_vector, exercise=TRUE}
+# character string of dates 
+string_dates <- c("1800-01-01", "1920-11-05", "2020-06-26")
+# create date_vector
+date_vector <- as.Date(x = )
+# print date_vector to the screen below:
+
+# check the structure with str()
+
+# what is the format of date_vector?
+```
+
+## Date-times (`POSIX`)
+
+R also comes with a few handy functions for dates, such as `Sys.Date()` and `Sys.time()`, which gives us our system's current date or time. 
+
+Use the code block below to create `current_date` and `current_time`, then print them to the screen to view their contents. 
+
+```{r Sys-Date, exercise=TRUE}
+# current_date
+current_date <- Sys.Date()
+# print to screen 
+
+# current_time
+current_time <- Sys.time()
+# print to screen
+
+```
+
+Notice the difference in formats: 
+
+- `Sys.Date()` creates a date in format `YYYY-MM-DD`  
+
+- `Sys.time()` creates a date in format `YYYY-MM-DD HH:MM:SS TZ` 
+
+The `current_date` and `current_time` vectors have been created again in the code block below. Explore their contents with `str()` and `dput()`:
+
+```{r prepare-current_date-current_time, include=FALSE}
+# current_date
+current_date <- Sys.Date()
+
+# current_time
+current_time <- Sys.time()
+```
+
+
+```{r current_date-current_time, exercise=TRUE, exercise.setup = "prepare-current_date-current_time"}
+# explore with str()
+
+
+# explore with dput()
+
+
+# How does R create dates?
+```
+
+
+As you can see, these are stored as two different classes: 
+
+- `Sys.Date()` creates date with `"Date"` class  
+- `Sys.time()` creates a date with two classes, `"POSIXct"`/`"POSIXt"`  
+
+*What's the difference?*
+
+Both classes have numeric values. These values are related to the [UNIX Epoch time](https://en.wikipedia.org/wiki/Unix_time), which is January 1, 1970 (00:00:00 UTC), 
+
+The UNIX Epoch serves as a point in time in which the computer can calculate dates *from*. The actual date and time is arbitrary, but without a fixed point in time, there's no way to quantify or measure a 'date.' For the `"Date"` class, the number represents the number of days, and for the `"POSIXct"`/`"POSIXt"` classes, this represents the number of seconds (to the nearest second) since the epoch. The `"POSIXct"`/`"POSIXt"` classes also both contain a time-zone (explore your system's time-zone with `Sys.timezone(location = TRUE)`). 
+
+We can test the differences in `"Date"`, `"POSIXct"`, and `"POSIXt"` classes with the code block below. 
+
+First, we can use the `as.numeric()` function to get the number of days/seconds since the epoch. Then, we can the number to a properly formatted version of the epoch (`"1970-01-01"` or `"1970-01-01 00:00:00 UTC"`). 
+
+In both examples, it should return today's date. 
+
+```{r days_since_epoch, exercise=TRUE}
+# current date
+current_date <- Sys.Date()
+# extract days 
+days_since_epoch <- as.numeric(current_date)
+# convert to date and add days
+as.Date("1970-01-01") + 
+```
+
+```{r secs_since_epoch, exercise=TRUE}
+# current time
+current_time <- Sys.time()
+# extract seconds
+secs_since_epoch <- as.numeric(current_time)
+# convert to date and add seconds
+as.POSIXlt("1970-01-01 00:00:00 UTC") + 
+```
+
+We've created three character vectors with dates for the code block below, `chr_dates_times_tzs`, `chr_dates_times`, and `chr_dates`
+
+```{r prepare-as-POSIXct-as-POSIXlt, include=FALSE}
+# dates, times, and timezones
+chr_dates_times_tzs <- c("2005-09-13 18:15:01 Zulu", 
+                         "1970-01-01 12:01:27 US/Pacific", 
+                         "2020-06-10 01:01:27 Israel")
+# dates and times 
+chr_dates_times <- c("1983-03-20 03:30:13", 
+                     "1967-07-26 15:11:23", 
+                     "2001-01-15 11:37:48")
+# dates
+chr_dates <- c("2014-08-24", 
+               "1902-12-23", 
+               "1955-04-01")
+```
+
+Use `as.Date()`, `as.POSIXct()` and `as.POSIXlt()` to explore each vector:
+
+```{r as-POSIXct-as-POSIXlt, exercise=TRUE, exercise.setup = "prepare-as-POSIXct-as-POSIXlt"}
+# check with as.POSIXct()
+
+
+
+
+
+# check with as.POSIXlt()
+
+
+
+
+# how are they different?
+```
+
+In the tidyverse, we will be using the [`lubridate` package](https://lubridate.tidyverse.org/) to handle dates and times (but we won't cover that here).
+
+## Difftimes 
+
+Now that we've know how to create dates with `as.Date()`, `as.POSIXct()`, and `as.POSIXlt()`, we can use these functions to calculate the difference between them. 
+
+The function for creating the distance between two time-points is `difftime()`, and it takes the following arguments:
+
+```r
+difftime(time1 = , time2 = , units = )
+```
+
+We've used the `Sys.Date()` function to create two dates (`last_year` and `two_years_ago`). Use these vectors and `difftime()` to get the duration in `"weeks"`.  
+
+```{r prepare-difftime, include=FALSE}
+last_year <- Sys.Date() - 365 
+two_years_ago <- Sys.Date() - 730
+```
+
+```{r difftime, exercise=TRUE, exercise.setup = "prepare-difftime"}
+# check the structure of last_year and two_years_ago
+
+# calculate the difftime in "days"
+vec_difftime <- difftime(time1 = , time2 = , units = "")
+
+# print vec_difftime
+```
+
+Use the `dput()` function to recreate the difftime object.  
+
+```{r prepare-difftime-dput, include=FALSE}
+last_year <- Sys.Date() - 365 
+two_years_ago <- Sys.Date() - 730
+vec_difftime <- difftime(time1 = last_year, 
+                         time2 = two_years_ago, 
+                         units = "days")
+```
+
+```{r difftime-dput, exercise=TRUE, exercise.setup = "prepare-difftime-dput"}
+# check vec_difftime with dput()
+dput()
+# how does R create difftimes?
+```
+
+We can see the structure of `vec_difftime` contains the numeric value (`365`), it's `class`, and the `units`.
+
+## Review 
+
+We've covered factors, dates, date-times, and difftimes. We used the `dput()` function to check their contents. In the code block below, all of the objects have been loaded (us the ls() function to view a full list). 
+
+Feel free to explore each object with the other functions we've learned (like `class()`, `typeof()`, `head()`, and `tail()`).
+
+```{r prepare-all, include=FALSE}
+TestDataFrame <- data.frame(
+    name = c("Pete", "Bob","Jane","Emily","Fran"),
+    sex = c("Male", "Male","Female", "Female","Female"),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble <- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        "Pete",   "Male",     78,   42,
+         "Bob",   "Male",     88,   38,
+        "Jane", "Female",     92,   26,
+       "Emily", "Female",     89,   30,
+        "Fran", "Female",     84,   35)
+# char_vector
+char_vector <- c("Never", "Sometimes", "Always",
+                 "Rarely",  "Often")
+# levels
+fctr_levels <- c("Never", "Rarely", "Sometimes", 
+                "Often", "Always")
+# fctr_labels
+fctr_labels <- c("NEVER", "RARELY", "SOMETIMES", 
+                "OFTEN", "ALWAYS")
+# character string length 1
+chr_string <- c("FACTOR LABEL ")
+# create fctr_with_levels
+fctr_with_levels <- factor(x = char_vector, 
+                        levels = fctr_levels)
+# create fctr_with_labels
+fctr_with_labels <- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = fctr_labels)
+# fctr_chr_string
+fctr_chr_string <- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = chr_string)
+# fct_ordered
+fct_ordered <- factor(x = char_vector, 
+                      levels = fctr_levels, 
+                      ordered = TRUE)
+# character string of dates 
+string_dates <- c("1800-01-01", "1920-11-05", "2020-06-26")
+# create date_vector
+date_vector <- as.Date(x = string_dates)
+# current_date
+current_date <- Sys.Date()
+# current_time
+current_time <- Sys.time()
+# dates, times, and timezones
+chr_dates_times_tzs <- c("2005-09-13 18:15:01 Zulu", 
+                         "1970-01-01 12:01:27 US/Pacific", 
+                         "2020-06-10 01:01:27 Israel")
+# dates and times 
+chr_dates_times <- c("1983-03-20 03:30:13", 
+                     "1967-07-26 15:11:23", 
+                     "2001-01-15 11:37:48")
+# dates
+chr_dates <- c("2014-08-24", 
+               "1902-12-23", 
+               "1955-04-01")
+# difftime objects
+last_year <- Sys.Date() - 365 
+two_years_ago <- Sys.Date() - 730
+vec_difftime <- difftime(time1 = last_year, 
+                         time2 = two_years_ago, 
+                         units = "days")
+```
+
+```{r all, exercise=TRUE, exercise.setup = "prepare-all"}
+# use ls() to view all objects
+```
+
+
+
+
+
+
+
+
+

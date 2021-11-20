@@ -13,7 +13,7 @@
 <meta name="progressive" content="true" />
 <meta name="allow-skip" content="true" />
 
-<title>Subsetting data in R</title>
+<title>An introduction to S3 atomic vectors</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js" type="text/javascript"></script>
 
@@ -137,240 +137,488 @@ $(document).ready(function () {
 
 <div class="topics">
 
-<p>There are three primary methods for subetting in R:</p>
+<blockquote>
+<p>“<em>Every S3 object is built on top of a base type, and often stores additional information in other attributes.</em>” - Advanced R (2019), Second Edition, Hadley Wickham</p>
+</blockquote>
+<p>S3 vectors include factors, dates, date-times, difftimes.</p>
+<div id="section-recreate-objects-in-r" class="section level2">
+<h2>Recreate objects in R</h2>
+<p>In order to understand the structure of an object in R, we can use the <code>dput()</code> function to view how R ‘recreates’ this object.</p>
+<p>We’ve created two datasets in the code block below, <code>TestDataFrame</code> and <code>TestTibble</code>. Use <code>str()</code> to view their contents.</p>
+<div class="tutorial-exercise-support" data-label="prepare-TestDataFrame-TestTibble" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>TestDataFrame &lt;- data.frame(
+    name = c(&quot;Pete&quot;, &quot;Bob&quot;,&quot;Jane&quot;,&quot;Emily&quot;,&quot;Fran&quot;),
+    sex = c(&quot;Male&quot;, &quot;Male&quot;,&quot;Female&quot;, &quot;Female&quot;,&quot;Female&quot;),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble &lt;- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        &quot;Pete&quot;,   &quot;Male&quot;,     78,   42,
+         &quot;Bob&quot;,   &quot;Male&quot;,     88,   38,
+        &quot;Jane&quot;, &quot;Female&quot;,     92,   26,
+       &quot;Emily&quot;, &quot;Female&quot;,     89,   30,
+        &quot;Fran&quot;, &quot;Female&quot;,     84,   35)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="TestDataFrame-TestTibble" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>str(TestDataFrame)
+str(TestTibble)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-TestDataFrame-TestTibble","exercise.checker":"NULL"}</script>
+</div>
+<p>Now use the <code>dput()</code> to view how R ‘recreates’ these objects.</p>
+<div class="tutorial-exercise-support" data-label="prepare-TestDataFrame-TestTibble-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>TestDataFrame &lt;- data.frame(
+    name = c(&quot;Pete&quot;, &quot;Bob&quot;,&quot;Jane&quot;,&quot;Emily&quot;,&quot;Fran&quot;),
+    sex = c(&quot;Male&quot;, &quot;Male&quot;,&quot;Female&quot;, &quot;Female&quot;,&quot;Female&quot;),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble &lt;- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        &quot;Pete&quot;,   &quot;Male&quot;,     78,   42,
+         &quot;Bob&quot;,   &quot;Male&quot;,     88,   38,
+        &quot;Jane&quot;, &quot;Female&quot;,     92,   26,
+       &quot;Emily&quot;, &quot;Female&quot;,     89,   30,
+        &quot;Fran&quot;, &quot;Female&quot;,     84,   35)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="TestDataFrame-TestTibble-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>dput(TestDataFrame)
+dput(TestTibble)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-TestDataFrame-TestTibble-dput","exercise.checker":"NULL"}</script>
+</div>
+<p>We can see the output from <code>dput(TestDataFrame)</code> tells us <code>TestDataFrame</code> is a list comprised of four vectors (<code>name</code>, <code>sex</code>, <code>score</code>, and <code>age</code>), of class <code>data.frame</code>,</p>
+<p>The output of <code>dput(TestTibble)</code> tells us <code>TestTibble</code> is also a list with four vectors (<code>name</code>, <code>sex</code>, <code>score</code>, and <code>age</code>), but <code>TestTibble</code> has multiple classes:</p>
+<p><code>class = c("tbl_df", "tbl", "data.frame")</code></p>
+<p>We can use the output from <code>dput()</code> to recreate each object. Copy the output from <code>dput()</code> above and paste it below to recreate <code>TestDataFrame</code> and <code>TestTibble</code>.</p>
+<div class="tutorial-exercise" data-label="recreate-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>TestDataFrame2 &lt;- 
+TestTibble2 &lt;- 
+# check the structure of TestDataFrame2
+str(TestDataFrame2)
+# check the structure of TestTibble2
+str(TestTibble2)
+# are they identical to the original TestDataFrame and TestTibble?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+<p>So far, we’ve used <code>str()</code>, <code>typeof()</code>, and <code>class()</code> to interrogate the contents and structure of R objects. <code>dput()</code> is a way to combine all three (and it gives you the code to ‘recreate’ the object, which always comes in handy!)</p>
+</div>
+<div id="section-factors" class="section level2">
+<h2>Factors</h2>
+<p>Factors are S3 vectors which hold a distinct list of labels (or levels). For example, imagine we have a character vector with a given set of responses, like the one below:</p>
+<div class="tutorial-exercise" data-label="char_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)
+# print the char_vector below</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+<p>You can create factors using <code>factor()</code>. Factors give references and levels to categorical vectors. The correct order for <code>char_vector</code> is:</p>
+<p><code>Never</code> &lt; <code>Rarely</code> &lt; <code>Sometimes</code> &lt; <code>Often</code> &lt; <code>Always</code></p>
+<div class="tutorial-exercise-support" data-label="prepare-fctr_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)</code></pre>
+</div>
+<p>Below we convert <code>char_vector</code> into a factor vector (<code>fctr_vector</code>) using <code>factor()</code>.</p>
+<p>Check the levels of <code>fctr_vector</code> with <code>levels()</code></p>
+<div class="tutorial-exercise" data-label="fctr_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>fctr_vector &lt;- factor(x = char_vector)
+# check levels
+levels()</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-fctr_vector","exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-factor-levels" class="section level2">
+<h2>Factor levels</h2>
+<p>We need to set the levels in <code>fctr_vector</code> in the correct order, which we can do with the <code>levels</code> argument. By default, the levels are assigned alphabetically (using unique values only).</p>
+<div class="tutorial-exercise-support" data-label="prepare-fctr_vector-levels" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)</code></pre>
+</div>
+<p>Create <code>fctr_vector</code> again from <code>char_vector</code>, but this time place each level in it’s correct place with the <code>levels</code> argument (inside <code>c()</code>):</p>
+<p><code>Never</code> &lt; <code>Rarely</code> &lt; <code>Sometimes</code> &lt; <code>Often</code> &lt; <code>Always</code></p>
+<div class="tutorial-exercise" data-label="fctr_vector-levels" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># place levels in the correct order
+fctr_levels &lt;- c(&quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+# place fctr_levels in the levels argument 
+fctr_vector &lt;- factor(x = char_vector, 
+                    levels = )
+# confirm levels 
+levels()</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-fctr_vector-levels","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="prepare-fctr_vector-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># char_vector
+char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)
+# levels
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)
+# fctr_levels
+fctr_vector &lt;- factor(x = char_vector, 
+                    levels = fctr_levels)</code></pre>
+</div>
+<p>We can check the structure of <code>fctr_vector</code> with <code>dput()</code></p>
+<div class="tutorial-exercise" data-label="fctr_vector-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>dput(fctr_vector)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-fctr_vector-dput","exercise.checker":"NULL"}</script>
+</div>
+<p>The output of <code>dput()</code> tells us a lot about how R deals with with factors:</p>
 <ol style="list-style-type: decimal">
-<li>single brackets: <code>[</code><br />
+<li>Each unique level value gets assigned an integer (in this case, 1-5)<br />
 </li>
-<li>double brackets: <code>[[</code><br />
+<li>The levels have a corresponding <code>.Label</code> value<br />
 </li>
-<li>dollar sign: <code>$</code></li>
+<li>The class of <code>fctr_vector</code> is <code>"factor"</code></li>
 </ol>
-<div id="section-subsetting-vectors" class="section level2">
-<h2>Subsetting vectors</h2>
-<div class="tutorial-exercise-support" data-label="prepare-num_vec" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>num_vec &lt;- c(2, 9, 4, 3, 7)</code></pre>
+<p>The integer values are printed in the order they were supplied in <code>char_vector</code>:</p>
+<p><code>c(1L, 3L, 5L, 2L, 4L)</code></p>
+<div class="tutorial-exercise-support" data-label="prepare-print-char_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># char_vector
+char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)</code></pre>
 </div>
-<p>View the numeric vector (<code>num_vec</code>) in the code chunk by clicking on the <strong>Run Code</strong> button:</p>
-<div class="tutorial-exercise" data-label="num_vec" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>num_vec</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec","exercise.checker":"NULL"}</script>
+<div class="tutorial-exercise" data-label="print-char_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># check against the order in char_vector
+char_vector</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-print-char_vector","exercise.checker":"NULL"}</script>
 </div>
-<p>Subset <code>num_vec</code> using brackets and a numerical position (or index):</p>
-<div class="tutorial-exercise-support" data-label="prepare-num_vec-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>num_vec &lt;- c(2, 9, 4, 3, 7)</code></pre>
+<p><code>1L</code> = <code>"Never"</code>, <code>3L</code> = <code>"Sometimes"</code>, <code>5L</code> = <code>"Always"</code>, <code>2L</code> = <code>"Rarely"</code>, <code>4L</code> = <code>"Often"</code></p>
+<p>Note that the number of levels in a factor are distinct, so factors come in handy for character strings with specific and repeated categories.</p>
+<p>Consider the following character vectors: <code>mult_char_vector</code> and <code>fctr_levels</code></p>
+<div class="tutorial-exercise-support" data-label="prepare-mult-char_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># mult_char_vector
+mult_char_vector &lt;- c(&quot;Never&quot;, &quot;Always&quot;, &quot;Sometimes&quot;, &quot;Often&quot;,
+                 &quot;Always&quot;, &quot;Rarely&quot;, &quot;Often&quot;, &quot;Rarely&quot;)
+# fctr_levels (in order)
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)</code></pre>
 </div>
-<div class="tutorial-exercise" data-label="num_vec-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># subset the number at position 5
+<p>We’ve created the following vectors.</p>
+<pre class="r"><code>mult_char_vector &lt;- c(&quot;Never&quot;, &quot;Always&quot;, &quot;Sometimes&quot;, &quot;Often&quot;,
+                 &quot;Always&quot;, &quot;Rarely&quot;, &quot;Often&quot;, &quot;Rarely&quot;)
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)</code></pre>
+<p>Use the code block below to example the length of <code>mult_char_vector</code>, <code>fctr_levels</code> and the structure of <code>fctr_mult_vector</code> (after supplying <code>mult_char_vector</code> and <code>fctr_levels</code> to <code>factor()</code>).</p>
+<div class="tutorial-exercise" data-label="mult-char_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># fctr_levels
+fctr_mult_vector &lt;- factor(x = mult_char_vector, 
+                    levels = fctr_levels)
+# check length() of mult_char_vector
 
-# subset the number at position 2</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec-index","exercise.checker":"NULL"}</script>
-</div>
-<p>We can also subset a range of numbers using <code>:</code>. Subset the numbers from position 2-4 using <code>2:4</code>:</p>
-<div class="tutorial-exercise-support" data-label="prepare-num_vec-index-range" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>num_vec &lt;- c(2, 9, 4, 3, 7)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="num_vec-index-range" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># subset numbers 2-4 </code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec-index-range","exercise.checker":"NULL"}</script>
-</div>
-<p>The output from <code>num_vec[2:4]</code> is another vector (of the numbers we’ve subsetted).</p>
-<div class="tutorial-exercise" data-label="num_vec-index-range-str" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># check the structure of num_vec[2:4] with str() below
-str()</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec-index-range","exercise.checker":"NULL"}</script>
-</div>
-<p>This is a numeric vector with three numbers (<code>num [1:3] 9 4 3</code>)</p>
-<p>We can also use the <code>c()</code> function to create an index and use it to subset <code>num_vec</code>. The object <code>x</code> below contains the three positions for the numerical index above (<code>2:4</code>).</p>
-<div class="tutorial-exercise-support" data-label="prepare-num_vec-index-c" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>num_vec &lt;- c(2, 9, 4, 3, 7)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="num_vec-index-c" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># create x with c()
-x &lt;- c(2, 3, 4)
-# subset num_vec with x</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec-index-c","exercise.checker":"NULL"}</script>
-</div>
-<p>We can see the <code>num_vec[x]</code> returns the same result as <code>num_vec[2:4]</code>.</p>
-<p>We can also use double-brackets to subset a single position from a vectors (<code>[[]]</code>), but this doesn’t work for a numerical range:</p>
-<div class="tutorial-exercise" data-label="num_vec-compare-brackets" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># this works
-str(num_vec[[2]])
-# this doesn&#39;t
-str(num_vec[[2:4]])</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-num_vec-index-c","exercise.checker":"NULL"}</script>
-</div>
-<p>Double brackets are usually reserved for subsetting more complex objects (like <code>data.frame</code>s or <code>list</code>s).</p>
-</div>
-<div id="section-subsetting-tibbles" class="section level2">
-<h2>Subsetting <code>tibble</code>s</h2>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-str" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<p>Most of the data we’ll encounter in this course will be in <code>data.frame</code>s or <code>tibble</code>s, so we’ve loaded the <code>MovieTibble</code> <code>tibble</code>. Check the structure below:</p>
-<div class="tutorial-exercise" data-label="MovieTibble-str" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># check the structure of MovieTibble
-str()</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-str","exercise.checker":"NULL"}</script>
-</div>
-<p><code>tibbles</code> are rectangular (like spreadsheets) and contain vectors of equal length. The dollar sign (<code>$</code>) can be used to subset the vectors by name.</p>
-<p>Use the dollar sign below to subset the <code>title</code> column from <code>MovieTibble</code>, but wrap the output in the <code>head()</code> function to minimize the output.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-dollar-sign" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-dollar-sign" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># view the &#39;head()&#39; of the title column
-head()</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-dollar-sign","exercise.checker":"NULL"}</script>
-</div>
-<p><strong>If we use the dollar sign to subset columns from a <code>tibble</code> or <code>data.frame</code>, the output is a vector.</strong></p>
-<p>We can also use the row and column position to subset <code>tibble</code>s just like vectors. But in order to use brackets, we need to supply <strong>two positions</strong> (or indexes): One for the row, and another for the column (as <code>data[row, column]</code>).</p>
-<p>Use a single bracket to get the <code>length</code> of the movie <code>13 Going On 30</code>.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># subset the &#39;length&#39; (column 3) for &#39;13 Going On 30&#39; (in row 5)
-MovieTibble[ , ]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-bracket","exercise.checker":"NULL"}</script>
-</div>
-<p>Note that if we provide two indexes (<code>[ 5, 3]</code>) to subset <code>MovieTibble</code>, the return object is a <code>tibble</code>. The same is true if we use a single row or column index:</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-bracket-single-row-col-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-bracket-single-row-col-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># single row index
-str(MovieTibble[ 5, ])
-# single column index
-str(MovieTibble[ , 3])</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-bracket-single-row-col-index","exercise.checker":"NULL"}</script>
-</div>
-</div>
-<div id="section-subsetting-data.frames" class="section level2">
-<h2>Subsetting <code>data.frame</code>s</h2>
-<p>However, if we convert <code>MovieTibble</code> to a <code>data.frame</code> with <code>as.data.frame()</code>, a single row index returns a <code>data.frame</code> (with all seven columns), but a single column index returns a vector (of all rows):</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieDataFrame-bracket-single-row-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieDataFrame-bracket-single-row-index" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># convert to data.frame
-MovieDataFrame &lt;- as.data.frame(MovieTibble)
-# provide a single row index for &#39;13 Going On 30&#39; (row 5)
-str(MovieDataFrame[ , ])
-# provide a single column index for the &#39;length&#39; (column 3)
-str(MovieDataFrame[ , ])</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieDataFrame-bracket-single-row-index","exercise.checker":"NULL"}</script>
-</div>
-<p>This distinction is important because we need to know the structure of each object we’re subsetting.</p>
-<p>We can use column names to subset, too. We can use <code>c()</code> to subset the <code>"title"</code> and <code>"genres"</code> for <code>13 Going On 30</code>.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-bracket-c-named-cols" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-bracket-c-named-cols" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># enter &quot;title&quot; and &quot;genres&quot; in the c() to subset 
-# these columns
-MovieTibble[ 5, c(&quot;&quot;, &quot;&quot;)]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-bracket-c-named-cols","exercise.checker":"NULL"}</script>
-</div>
-<p>We can also use this method to subset the <code>MovieDataFrame</code>:</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieDataFrame-bracket-c-named-cols" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieDataFrame-bracket-c-named-cols" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># enter &quot;title&quot; and &quot;genres&quot; in the c() to subset 
-# these columns
-MovieDataFrame[ 5, c(&quot;&quot;, &quot;&quot;)]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieDataFrame-bracket-c-named-cols","exercise.checker":"NULL"}</script>
-</div>
-<p>Note the difference in the printed output: the <code>tibble</code> gives us the dimensions of the output object (<code># A tibble: 1 × 2</code>), and the <em>number of rows</em> (<code>1</code>), while the <code>data.frame</code> prints column names (without the format) the row index (<code>5</code>).</p>
-<p>Recall that the dollar-sign returns a vector (<code>MovieTibble$</code>), which means we can subset this output by combing it with brackets (<code>[]</code>)</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-dollar-sign-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-dollar-sign-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># subset the movie &quot;13 Going On 30&quot; (in position 5)
-MovieTibble$title[ ]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-dollar-sign-bracket","exercise.checker":"NULL"}</script>
-</div>
-<p>We can also combine the dollar sign <code>$</code> with <code>==</code> to return a logical vector. Use <code>str()</code> to view the structure of the two logical conditions below:</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-dollar-sign-equals" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-dollar-sign-equals" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># return the structure of movies less than 95 minutes long
-str(MovieTibble$length &lt; )</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-dollar-sign-equals","exercise.checker":"NULL"}</script>
-</div>
-<div class="tutorial-exercise-support" data-label="prepare-MovieDataFrame-dollar-sign-equals" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieDataFrame-dollar-sign-equals" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># return the structure of movies greater than 90 minutes long
-str(MovieDataFrame$length &gt; )</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieDataFrame-dollar-sign-equals","exercise.checker":"NULL"}</script>
-</div>
-<p>Logical vectors might not seem very helpful, but they come in handy when we combine them with <code>[]</code>.</p>
-<p>We can use the logical vectors from <code>$</code> and <code>==</code> in combination with <code>[]</code> to subset <code>data.frame</code>s and <code>tibble</code>s. Use the code below to subset all movies in <code>MovieTibble</code> that are 120 minutes long.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-dollar-sign-equals-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-dollar-sign-equals-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># return movies that are 120 minutes long (recall that &#39;length&#39; is 
-# a column, so the &#39;120&#39; should be in the column position)
-MovieTibble[MovieTibble$length == , ]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-dollar-sign-equals-bracket","exercise.checker":"NULL"}</script>
-</div>
-<p>We can also use <code>c()</code> with <code>$</code>, <code>==</code> and <code>[]</code> to subset multiple movie lengths from <code>MovieDataFrame</code>.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieDataFrame-dollar-sign-equals-bracket-c" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieDataFrame-dollar-sign-equals-bracket-c" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># return movie &#39;title&#39; and &#39;length&#39; that are 85 and 110 minutes long 
-MovieDataFrame[MovieDataFrame$length == c( , ), c(&quot; &quot;, &quot; &quot;)]</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieDataFrame-dollar-sign-equals-bracket-c","exercise.checker":"NULL"}</script>
-</div>
-<p>We can control the subsetted results for <em>both</em> tibbles and data frames using double brackets (<code>[[]]</code>). Let’s review the behavior of single brackets. If we use a single bracket (without commas) and a numerical index, we get the first column in both <code>MovieTibble</code> and <code>MovieDataFrame</code> as a rectangular object.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-MovieDataFrame-review-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-MovieDataFrame-review-bracket" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># character column from tibble
-str(MovieTibble[1])
-# character column from data frame 
-str(MovieDataFrame[1])</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-MovieDataFrame-review-bracket","exercise.checker":"NULL"}</script>
-</div>
-<p>But if we use double-brackets, we get the same first column, but as a vector.</p>
-<div class="tutorial-exercise-support" data-label="prepare-MovieTibble-MovieDataFrame-double-brackets" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>source(&quot;https://bit.ly/3c6DfGe&quot;)
-MovieTibble &lt;- create_movie_data()
-MovieDataFrame &lt;- as.data.frame(MovieTibble)</code></pre>
-</div>
-<div class="tutorial-exercise" data-label="MovieTibble-MovieDataFrame-double-brackets" data-caption="extracting data from objects in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># character column as vectors
-str(MovieTibble[[1]])
-str(MovieDataFrame[[1]])</code></pre>
-<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-MovieTibble-MovieDataFrame-double-brackets","exercise.checker":"NULL"}</script>
-</div>
-<div data-iframe-height="">
+# check length() of fctr_levels
 
+# check structure (str()) of fctr_mult_vector
+
+# How many levels are in fctr_mult_vector?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-mult-char_vector","exercise.checker":"NULL"}</script>
+</div>
+<p>We can see that despite the <code>length()</code> of <code>mult_char_vector</code> being <code>8</code>, the number of levels in the <code>fctr_mult_vector</code> is constrained to <code>5</code> (the length of <code>fctr_levels</code>).</p>
+</div>
+<div id="section-factor-labels" class="section level2">
+<h2>Factor labels</h2>
+<p>The <code>labels</code> argument can also be used to assign either 1) character values in the same order as the <code>levels</code>, or 2) a single character string that gets assigned a numerical suffix for each unique value of <code>levels</code>.</p>
+<p>The code block creates three factors:</p>
+<ol style="list-style-type: decimal">
+<li><code>fctr_with_levels</code>, which uses <code>char_vector</code> as <code>x</code> and <code>fctr_levels</code> as <code>levels</code><br />
+</li>
+<li><code>fctr_with_labels</code>, which uses <code>char_vector</code> as <code>x</code> and <code>fctr_levels</code> as <code>levels</code>, and <code>fctr_labels</code> as <code>labels</code><br />
+</li>
+<li><code>fctr_chr_string</code>, which uses <code>char_vector</code> as <code>x</code> and <code>fctr_levels</code> as <code>levels</code>, <code>chr_string</code> as <code>labels</code></li>
+</ol>
+<p>Print each of the factors to the screen and investigate them with <code>dput()</code></p>
+<div class="tutorial-exercise-support" data-label="prepare-fctr_labels" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># fctr_levels
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)
+# fctr_labels
+fctr_labels &lt;- c(&quot;NEVER&quot;, &quot;RARELY&quot;, &quot;SOMETIMES&quot;, 
+                &quot;OFTEN&quot;, &quot;ALWAYS&quot;)
+# char_vector
+char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)
+
+# character string length 1
+chr_string &lt;- c(&quot;FACTOR LABEL &quot;)
+
+# create fctr_with_levels
+fctr_with_levels &lt;- factor(x = char_vector, 
+                        levels = fctr_levels)
+
+# create fctr_with_labels
+fctr_with_labels &lt;- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = fctr_labels)
+
+# fctr_chr_string
+fctr_chr_string &lt;- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = chr_string)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="fctr_labels" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># use ls() to print each factor to the screen
+ls()
+# use dput() to view each factor
+
+# how are these factors different?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-fctr_labels","exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-ordered-factors" class="section level2">
+<h2>Ordered factors</h2>
+<p>Sometimes it’s necessary to force the factor levels into a specific order, which we can do by setting <code>ordered</code> to <code>TRUE</code>. Use the code block below to create <code>fct_ordered</code> with <code>char_vector</code> and <code>fctr_levels</code>. Print <code>fctr_levels</code> and use <code>dput()</code> to investigate it’s structure.</p>
+<div class="tutorial-exercise-support" data-label="prepare-fct_ordered" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># char_vector
+char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)
+# fctr_levels
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="fct_ordered" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># create fct_ordered
+fct_ordered &lt;- factor(x = char_vector, 
+                      levels = fctr_levels, 
+                      ordered = )
+# print fct_ordered 
+
+# dput() fct_ordered
+
+# What is different about the structure of fct_ordered?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-fct_ordered","exercise.checker":"NULL"}</script>
+</div>
+<p>Ordered factors are helpful whenever you have a variable with ranked categories (like <code>high</code> - <code>medium</code> - <code>low</code>).</p>
+</div>
+<div id="section-dates" class="section level2">
+<h2>Dates</h2>
+<p>We’re going to cover three date formats in R: <code>"Date"</code>, <code>"POSIXlt"</code> and <code>"POSIXct"</code>.</p>
+<div id="section-iso-8601" class="section level3">
+<h3>ISO-8601</h3>
+<p>Dates come in a variety of formats, but only one correct format, and that’s the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 format</a>, or <code>YYYY-MM-DD</code>.</p>
+<p>Date storage formats have become such an issue, there’s even an xkcd comic about it:</p>
+<p><img src="https://imgs.xkcd.com/comics/iso_8601.png" /><!-- --></p>
+<p>The <code>as.Date()</code> function converts character vectors into a date vector, provided we supply the dates in the <code>YYYY-MM-DD</code> format. Create the <code>date_vector</code> below and view it’s structure with <code>str()</code>.</p>
+<div class="tutorial-exercise" data-label="date_vector" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># character string of dates 
+string_dates &lt;- c(&quot;1800-01-01&quot;, &quot;1920-11-05&quot;, &quot;2020-06-26&quot;)
+# create date_vector
+date_vector &lt;- as.Date(x = )
+# print date_vector to the screen below:
+
+# check the structure with str()
+
+# what is the format of date_vector?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-date-times-posix" class="section level2">
+<h2>Date-times (<code>POSIX</code>)</h2>
+<p>R also comes with a few handy functions for dates, such as <code>Sys.Date()</code> and <code>Sys.time()</code>, which gives us our system’s current date or time.</p>
+<p>Use the code block below to create <code>current_date</code> and <code>current_time</code>, then print them to the screen to view their contents.</p>
+<div class="tutorial-exercise" data-label="Sys-Date" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># current_date
+current_date &lt;- Sys.Date()
+# print to screen 
+
+# current_time
+current_time &lt;- Sys.time()
+# print to screen</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+<p>Notice the difference in formats:</p>
+<ul>
+<li><p><code>Sys.Date()</code> creates a date in format <code>YYYY-MM-DD</code></p></li>
+<li><p><code>Sys.time()</code> creates a date in format <code>YYYY-MM-DD HH:MM:SS TZ</code></p></li>
+</ul>
+<p>The <code>current_date</code> and <code>current_time</code> vectors have been created again in the code block below. Explore their contents with <code>str()</code> and <code>dput()</code>:</p>
+<div class="tutorial-exercise-support" data-label="prepare-current_date-current_time" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># current_date
+current_date &lt;- Sys.Date()
+
+# current_time
+current_time &lt;- Sys.time()</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="current_date-current_time" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># explore with str()
+
+
+# explore with dput()
+
+
+# How does R create dates?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-current_date-current_time","exercise.checker":"NULL"}</script>
+</div>
+<p>As you can see, these are stored as two different classes:</p>
+<ul>
+<li><code>Sys.Date()</code> creates date with <code>"Date"</code> class<br />
+</li>
+<li><code>Sys.time()</code> creates a date with two classes, <code>"POSIXct"</code>/<code>"POSIXt"</code></li>
+</ul>
+<p><em>What’s the difference?</em></p>
+<p>Both classes have numeric values. These values are related to the <a href="https://en.wikipedia.org/wiki/Unix_time">UNIX Epoch time</a>, which is January 1, 1970 (00:00:00 UTC),</p>
+<p>The UNIX Epoch serves as a point in time in which the computer can calculate dates <em>from</em>. The actual date and time is arbitrary, but without a fixed point in time, there’s no way to quantify or measure a ‘date.’ For the <code>"Date"</code> class, the number represents the number of days, and for the <code>"POSIXct"</code>/<code>"POSIXt"</code> classes, this represents the number of seconds (to the nearest second) since the epoch. The <code>"POSIXct"</code>/<code>"POSIXt"</code> classes also both contain a time-zone (explore your system’s time-zone with <code>Sys.timezone(location = TRUE)</code>).</p>
+<p>We can test the differences in <code>"Date"</code>, <code>"POSIXct"</code>, and <code>"POSIXt"</code> classes with the code block below.</p>
+<p>First, we can use the <code>as.numeric()</code> function to get the number of days/seconds since the epoch. Then, we can the number to a properly formatted version of the epoch (<code>"1970-01-01"</code> or <code>"1970-01-01 00:00:00 UTC"</code>).</p>
+<p>In both examples, it should return today’s date.</p>
+<div class="tutorial-exercise" data-label="days_since_epoch" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># current date
+current_date &lt;- Sys.Date()
+# extract days 
+days_since_epoch &lt;- as.numeric(current_date)
+# convert to date and add days
+as.Date(&quot;1970-01-01&quot;) + </code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise" data-label="secs_since_epoch" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># current time
+current_time &lt;- Sys.time()
+# extract seconds
+secs_since_epoch &lt;- as.numeric(current_time)
+# convert to date and add seconds
+as.POSIXlt(&quot;1970-01-01 00:00:00 UTC&quot;) + </code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
+</div>
+<p>We’ve created three character vectors with dates for the code block below, <code>chr_dates_times_tzs</code>, <code>chr_dates_times</code>, and <code>chr_dates</code></p>
+<div class="tutorial-exercise-support" data-label="prepare-as-POSIXct-as-POSIXlt" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># dates, times, and timezones
+chr_dates_times_tzs &lt;- c(&quot;2005-09-13 18:15:01 Zulu&quot;, 
+                         &quot;1970-01-01 12:01:27 US/Pacific&quot;, 
+                         &quot;2020-06-10 01:01:27 Israel&quot;)
+# dates and times 
+chr_dates_times &lt;- c(&quot;1983-03-20 03:30:13&quot;, 
+                     &quot;1967-07-26 15:11:23&quot;, 
+                     &quot;2001-01-15 11:37:48&quot;)
+# dates
+chr_dates &lt;- c(&quot;2014-08-24&quot;, 
+               &quot;1902-12-23&quot;, 
+               &quot;1955-04-01&quot;)</code></pre>
+</div>
+<p>Use <code>as.Date()</code>, <code>as.POSIXct()</code> and <code>as.POSIXlt()</code> to explore each vector:</p>
+<div class="tutorial-exercise" data-label="as-POSIXct-as-POSIXlt" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># check with as.POSIXct()
+
+
+
+
+
+# check with as.POSIXlt()
+
+
+
+
+# how are they different?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-as-POSIXct-as-POSIXlt","exercise.checker":"NULL"}</script>
+</div>
+<p>In the tidyverse, we will be using the <a href="https://lubridate.tidyverse.org/"><code>lubridate</code> package</a> to handle dates and times (but we won’t cover that here).</p>
+</div>
+<div id="section-difftimes" class="section level2">
+<h2>Difftimes</h2>
+<p>Now that we’ve know how to create dates with <code>as.Date()</code>, <code>as.POSIXct()</code>, and <code>as.POSIXlt()</code>, we can use these functions to calculate the difference between them.</p>
+<p>The function for creating the distance between two time-points is <code>difftime()</code>, and it takes the following arguments:</p>
+<pre class="r"><code>difftime(time1 = , time2 = , units = )</code></pre>
+<p>We’ve used the <code>Sys.Date()</code> function to create two dates (<code>last_year</code> and <code>two_years_ago</code>). Use these vectors and <code>difftime()</code> to get the duration in <code>"weeks"</code>.</p>
+<div class="tutorial-exercise-support" data-label="prepare-difftime" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>last_year &lt;- Sys.Date() - 365 
+two_years_ago &lt;- Sys.Date() - 730</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="difftime" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># check the structure of last_year and two_years_ago
+
+# calculate the difftime in &quot;days&quot;
+vec_difftime &lt;- difftime(time1 = , time2 = , units = &quot;&quot;)
+
+# print vec_difftime</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-difftime","exercise.checker":"NULL"}</script>
+</div>
+<p>Use the <code>dput()</code> function to recreate the difftime object.</p>
+<div class="tutorial-exercise-support" data-label="prepare-difftime-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>last_year &lt;- Sys.Date() - 365 
+two_years_ago &lt;- Sys.Date() - 730
+vec_difftime &lt;- difftime(time1 = last_year, 
+                         time2 = two_years_ago, 
+                         units = &quot;days&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="difftime-dput" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># check vec_difftime with dput()
+dput()
+# how does R create difftimes?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-difftime-dput","exercise.checker":"NULL"}</script>
+</div>
+<p>We can see the structure of <code>vec_difftime</code> contains the numeric value (<code>365</code>), it’s <code>class</code>, and the <code>units</code>.</p>
+</div>
+<div id="section-review" class="section level2">
+<h2>Review</h2>
+<p>We’ve covered factors, dates, date-times, and difftimes. We used the <code>dput()</code> function to check their contents. In the code block below, all of the objects have been loaded (us the ls() function to view a full list).</p>
+<p>Feel free to explore each object with the other functions we’ve learned (like <code>class()</code>, <code>typeof()</code>, <code>head()</code>, and <code>tail()</code>).</p>
+<div class="tutorial-exercise-support" data-label="prepare-all" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>TestDataFrame &lt;- data.frame(
+    name = c(&quot;Pete&quot;, &quot;Bob&quot;,&quot;Jane&quot;,&quot;Emily&quot;,&quot;Fran&quot;),
+    sex = c(&quot;Male&quot;, &quot;Male&quot;,&quot;Female&quot;, &quot;Female&quot;,&quot;Female&quot;),
+    score = c(78,88,92,89,84),
+    age = c(42,38,26,30,35)
+)
+TestTibble &lt;- tibble::tribble(
+         ~name,     ~sex, ~score, ~age,
+        &quot;Pete&quot;,   &quot;Male&quot;,     78,   42,
+         &quot;Bob&quot;,   &quot;Male&quot;,     88,   38,
+        &quot;Jane&quot;, &quot;Female&quot;,     92,   26,
+       &quot;Emily&quot;, &quot;Female&quot;,     89,   30,
+        &quot;Fran&quot;, &quot;Female&quot;,     84,   35)
+# char_vector
+char_vector &lt;- c(&quot;Never&quot;, &quot;Sometimes&quot;, &quot;Always&quot;,
+                 &quot;Rarely&quot;,  &quot;Often&quot;)
+# levels
+fctr_levels &lt;- c(&quot;Never&quot;, &quot;Rarely&quot;, &quot;Sometimes&quot;, 
+                &quot;Often&quot;, &quot;Always&quot;)
+# fctr_labels
+fctr_labels &lt;- c(&quot;NEVER&quot;, &quot;RARELY&quot;, &quot;SOMETIMES&quot;, 
+                &quot;OFTEN&quot;, &quot;ALWAYS&quot;)
+# character string length 1
+chr_string &lt;- c(&quot;FACTOR LABEL &quot;)
+# create fctr_with_levels
+fctr_with_levels &lt;- factor(x = char_vector, 
+                        levels = fctr_levels)
+# create fctr_with_labels
+fctr_with_labels &lt;- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = fctr_labels)
+# fctr_chr_string
+fctr_chr_string &lt;- factor(x = char_vector, 
+                        levels = fctr_levels, 
+                        labels = chr_string)
+# fct_ordered
+fct_ordered &lt;- factor(x = char_vector, 
+                      levels = fctr_levels, 
+                      ordered = TRUE)
+# character string of dates 
+string_dates &lt;- c(&quot;1800-01-01&quot;, &quot;1920-11-05&quot;, &quot;2020-06-26&quot;)
+# create date_vector
+date_vector &lt;- as.Date(x = string_dates)
+# current_date
+current_date &lt;- Sys.Date()
+# current_time
+current_time &lt;- Sys.time()
+# dates, times, and timezones
+chr_dates_times_tzs &lt;- c(&quot;2005-09-13 18:15:01 Zulu&quot;, 
+                         &quot;1970-01-01 12:01:27 US/Pacific&quot;, 
+                         &quot;2020-06-10 01:01:27 Israel&quot;)
+# dates and times 
+chr_dates_times &lt;- c(&quot;1983-03-20 03:30:13&quot;, 
+                     &quot;1967-07-26 15:11:23&quot;, 
+                     &quot;2001-01-15 11:37:48&quot;)
+# dates
+chr_dates &lt;- c(&quot;2014-08-24&quot;, 
+               &quot;1902-12-23&quot;, 
+               &quot;1955-04-01&quot;)
+# difftime objects
+last_year &lt;- Sys.Date() - 365 
+two_years_ago &lt;- Sys.Date() - 730
+vec_difftime &lt;- difftime(time1 = last_year, 
+                         time2 = two_years_ago, 
+                         units = &quot;days&quot;)</code></pre>
+</div>
+<div class="tutorial-exercise" data-label="all" data-caption="S3 Vectors in R" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># use ls() to view all objects</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.setup":"prepare-all","exercise.checker":"NULL"}</script>
 </div>
 
 <script type="application/shiny-prerendered" data-context="server-start">
@@ -379,7 +627,7 @@ library(tidyverse)
 library(skimr)
 library(knitr)
 knitr::opts_chunk$set(error = TRUE,
-  upload.fun = imgur_upload, exercise.cap = "extracting data from objects in R")
+  upload.fun = imgur_upload, exercise.cap = "S3 Vectors in R")
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -393,142 +641,142 @@ session$onSessionEnded(function() {
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-code-editor`)), session)
-output$`tutorial-exercise-num_vec-output` <- renderUI({
-  `tutorial-exercise-num_vec-result`()
+`tutorial-exercise-TestDataFrame-TestTibble-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-TestDataFrame-TestTibble-code-editor`)), session)
+output$`tutorial-exercise-TestDataFrame-TestTibble-output` <- renderUI({
+  `tutorial-exercise-TestDataFrame-TestTibble-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-index-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-index-code-editor`)), session)
-output$`tutorial-exercise-num_vec-index-output` <- renderUI({
-  `tutorial-exercise-num_vec-index-result`()
+`tutorial-exercise-TestDataFrame-TestTibble-dput-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-TestDataFrame-TestTibble-dput-code-editor`)), session)
+output$`tutorial-exercise-TestDataFrame-TestTibble-dput-output` <- renderUI({
+  `tutorial-exercise-TestDataFrame-TestTibble-dput-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-index-range-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-index-range-code-editor`)), session)
-output$`tutorial-exercise-num_vec-index-range-output` <- renderUI({
-  `tutorial-exercise-num_vec-index-range-result`()
+`tutorial-exercise-recreate-dput-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-recreate-dput-code-editor`)), session)
+output$`tutorial-exercise-recreate-dput-output` <- renderUI({
+  `tutorial-exercise-recreate-dput-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-index-range-str-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-index-range-str-code-editor`)), session)
-output$`tutorial-exercise-num_vec-index-range-str-output` <- renderUI({
-  `tutorial-exercise-num_vec-index-range-str-result`()
+`tutorial-exercise-char_vector-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-char_vector-code-editor`)), session)
+output$`tutorial-exercise-char_vector-output` <- renderUI({
+  `tutorial-exercise-char_vector-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-index-c-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-index-c-code-editor`)), session)
-output$`tutorial-exercise-num_vec-index-c-output` <- renderUI({
-  `tutorial-exercise-num_vec-index-c-result`()
+`tutorial-exercise-fctr_vector-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fctr_vector-code-editor`)), session)
+output$`tutorial-exercise-fctr_vector-output` <- renderUI({
+  `tutorial-exercise-fctr_vector-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-num_vec-compare-brackets-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-num_vec-compare-brackets-code-editor`)), session)
-output$`tutorial-exercise-num_vec-compare-brackets-output` <- renderUI({
-  `tutorial-exercise-num_vec-compare-brackets-result`()
+`tutorial-exercise-fctr_vector-levels-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fctr_vector-levels-code-editor`)), session)
+output$`tutorial-exercise-fctr_vector-levels-output` <- renderUI({
+  `tutorial-exercise-fctr_vector-levels-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-str-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-str-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-str-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-str-result`()
+`tutorial-exercise-fctr_vector-dput-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fctr_vector-dput-code-editor`)), session)
+output$`tutorial-exercise-fctr_vector-dput-output` <- renderUI({
+  `tutorial-exercise-fctr_vector-dput-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-dollar-sign-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-dollar-sign-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-dollar-sign-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-dollar-sign-result`()
+`tutorial-exercise-print-char_vector-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-print-char_vector-code-editor`)), session)
+output$`tutorial-exercise-print-char_vector-output` <- renderUI({
+  `tutorial-exercise-print-char_vector-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-bracket-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-bracket-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-bracket-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-bracket-result`()
+`tutorial-exercise-mult-char_vector-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-mult-char_vector-code-editor`)), session)
+output$`tutorial-exercise-mult-char_vector-output` <- renderUI({
+  `tutorial-exercise-mult-char_vector-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-bracket-single-row-col-index-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-bracket-single-row-col-index-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-bracket-single-row-col-index-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-bracket-single-row-col-index-result`()
+`tutorial-exercise-fctr_labels-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fctr_labels-code-editor`)), session)
+output$`tutorial-exercise-fctr_labels-output` <- renderUI({
+  `tutorial-exercise-fctr_labels-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieDataFrame-bracket-single-row-index-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieDataFrame-bracket-single-row-index-code-editor`)), session)
-output$`tutorial-exercise-MovieDataFrame-bracket-single-row-index-output` <- renderUI({
-  `tutorial-exercise-MovieDataFrame-bracket-single-row-index-result`()
+`tutorial-exercise-fct_ordered-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-fct_ordered-code-editor`)), session)
+output$`tutorial-exercise-fct_ordered-output` <- renderUI({
+  `tutorial-exercise-fct_ordered-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-bracket-c-named-cols-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-bracket-c-named-cols-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-bracket-c-named-cols-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-bracket-c-named-cols-result`()
+`tutorial-exercise-date_vector-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-date_vector-code-editor`)), session)
+output$`tutorial-exercise-date_vector-output` <- renderUI({
+  `tutorial-exercise-date_vector-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieDataFrame-bracket-c-named-cols-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieDataFrame-bracket-c-named-cols-code-editor`)), session)
-output$`tutorial-exercise-MovieDataFrame-bracket-c-named-cols-output` <- renderUI({
-  `tutorial-exercise-MovieDataFrame-bracket-c-named-cols-result`()
+`tutorial-exercise-Sys-Date-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-Sys-Date-code-editor`)), session)
+output$`tutorial-exercise-Sys-Date-output` <- renderUI({
+  `tutorial-exercise-Sys-Date-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-dollar-sign-bracket-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-dollar-sign-bracket-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-dollar-sign-bracket-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-dollar-sign-bracket-result`()
+`tutorial-exercise-current_date-current_time-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-current_date-current_time-code-editor`)), session)
+output$`tutorial-exercise-current_date-current_time-output` <- renderUI({
+  `tutorial-exercise-current_date-current_time-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-dollar-sign-equals-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-dollar-sign-equals-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-dollar-sign-equals-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-dollar-sign-equals-result`()
+`tutorial-exercise-days_since_epoch-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-days_since_epoch-code-editor`)), session)
+output$`tutorial-exercise-days_since_epoch-output` <- renderUI({
+  `tutorial-exercise-days_since_epoch-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieDataFrame-dollar-sign-equals-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieDataFrame-dollar-sign-equals-code-editor`)), session)
-output$`tutorial-exercise-MovieDataFrame-dollar-sign-equals-output` <- renderUI({
-  `tutorial-exercise-MovieDataFrame-dollar-sign-equals-result`()
+`tutorial-exercise-secs_since_epoch-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-secs_since_epoch-code-editor`)), session)
+output$`tutorial-exercise-secs_since_epoch-output` <- renderUI({
+  `tutorial-exercise-secs_since_epoch-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-dollar-sign-equals-bracket-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-dollar-sign-equals-bracket-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-dollar-sign-equals-bracket-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-dollar-sign-equals-bracket-result`()
+`tutorial-exercise-as-POSIXct-as-POSIXlt-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-as-POSIXct-as-POSIXlt-code-editor`)), session)
+output$`tutorial-exercise-as-POSIXct-as-POSIXlt-output` <- renderUI({
+  `tutorial-exercise-as-POSIXct-as-POSIXlt-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieDataFrame-dollar-sign-equals-bracket-c-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieDataFrame-dollar-sign-equals-bracket-c-code-editor`)), session)
-output$`tutorial-exercise-MovieDataFrame-dollar-sign-equals-bracket-c-output` <- renderUI({
-  `tutorial-exercise-MovieDataFrame-dollar-sign-equals-bracket-c-result`()
+`tutorial-exercise-difftime-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-difftime-code-editor`)), session)
+output$`tutorial-exercise-difftime-output` <- renderUI({
+  `tutorial-exercise-difftime-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-MovieDataFrame-review-bracket-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-MovieDataFrame-review-bracket-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-MovieDataFrame-review-bracket-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-MovieDataFrame-review-bracket-result`()
+`tutorial-exercise-difftime-dput-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-difftime-dput-code-editor`)), session)
+output$`tutorial-exercise-difftime-dput-output` <- renderUI({
+  `tutorial-exercise-difftime-dput-result`()
 })
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-`tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-code-editor`)), session)
-output$`tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-output` <- renderUI({
-  `tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-result`()
+`tutorial-exercise-all-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-all-code-editor`)), session)
+output$`tutorial-exercise-all-output` <- renderUI({
+  `tutorial-exercise-all-result`()
 })
 </script>
  <!--html_preserve-->
@@ -538,7 +786,7 @@ output$`tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-output` <- 
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","base64enc","broom","bslib","cellranger","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","knitr","later","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","repr","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","skimr","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","tzdb","utf8","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.3.0","4.1.1","0.1-3","0.7.10","0.3.1","1.1.0","3.1.0","2.0-2","4.1.1","1.4.2","4.1.1","1.1.1","2.1.1","0.6.28","1.0.7","0.3.2","0.14","0.5.0","1.1.0","0.5.1","1.5.0","0.1.1","3.3.5","1.5.0","4.1.1","4.1.1","4.1.1","0.3.0","2.4.3.9000","1.1.1","0.5.2","1.5.4","1.6.3","1.4.2","0.1.4","1.7.2","1.36","1.3.0","0.10.1","1.0.1","1.8.0","2.0.1","1.1","4.1.1","0.12","0.1.8","0.5.0","1.6.4","2.0.3","1.2.0.1","0.3.4","2.5.1","1.0.7","2.1.0","1.3.1","1.1.3","2.0.1","0.4.12","2.11","2.0.2","0.13","1.0.2","0.4.0","1.1.1","1.7.1","2.1.3","4.1.1","1.7.5","1.4.0","3.1.6","1.1.4","1.1.1","1.3.1","4.1.1","0.2.0","1.2.2","4.1.1","0.3.8","2.4.2","0.28","1.3.2","1.8-4","2.2.1"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","base64enc","broom","bslib","cellranger","cli","colorspace","compiler","crayon","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","fastmap","forcats","fs","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","highr","hms","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","knitr","later","learnr","lifecycle","lubridate","magrittr","markdown","methods","mime","modelr","munsell","pillar","pkgconfig","promises","purrr","R6","Rcpp","readr","readxl","repr","reprex","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","skimr","stats","stringi","stringr","tibble","tidyr","tidyselect","tidyverse","tools","tzdb","utf8","utils","vctrs","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.3.0","4.1.1","0.1-3","0.7.10","0.3.1","1.1.0","3.1.0","2.0-2","4.1.1","1.4.2","4.1.1","1.1.1","2.1.1","0.6.28","1.0.7","0.3.2","0.14","0.5.0","1.1.0","0.5.1","1.5.0","0.1.1","3.3.5","1.5.0","4.1.1","4.1.1","4.1.1","0.3.0","2.4.3.9000","0.9","1.1.1","0.5.2","1.5.4","1.6.3","1.4.2","0.1.4","1.7.2","1.36","1.3.0","0.10.1","1.0.1","1.8.0","2.0.1","1.1","4.1.1","0.12","0.1.8","0.5.0","1.6.4","2.0.3","1.2.0.1","0.3.4","2.5.1","1.0.7","2.1.0","1.3.1","1.1.3","2.0.1","0.4.12","2.11","2.0.2","0.13","1.0.2","0.4.0","1.1.1","1.7.1","2.1.3","4.1.1","1.7.5","1.4.0","3.1.6","1.1.4","1.1.1","1.3.1","4.1.1","0.2.0","1.2.2","4.1.1","0.3.8","2.4.2","0.28","1.3.2","1.8-4","2.2.1"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
@@ -552,7 +800,7 @@ output$`tutorial-exercise-MovieTibble-MovieDataFrame-double-brackets-output` <- 
 
 <!-- begin doc-metadata -->
 <div id="doc-metadata">
-<h2 class="title toc-ignore" style="display:none;">Subsetting data in R</h2>
+<h2 class="title toc-ignore" style="display:none;"><em>An introduction to S3 atomic vectors</em></h2>
 </div>
 <!-- end doc-metadata -->
 
