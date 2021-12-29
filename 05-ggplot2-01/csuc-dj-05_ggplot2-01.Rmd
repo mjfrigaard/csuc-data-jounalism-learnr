@@ -9,7 +9,7 @@ output:
       in_header: resizer.html
 runtime: shiny_prerendered
 description: >
-  Introduction to data visualization with ggplot2.
+  introduction to data visualization with ggplot2.
 ---
 
 ```{r setup, include = FALSE}
@@ -222,7 +222,7 @@ skimr::skim()
 
 The median IMDB rating is a good measure of the 'middle' of this variable. We can see from the `skim()` output above that this value is `6.1` (as `p50`). The box-plot confirms this, as well as the 25th and 75th percentile (as `p25` and `p75`) in the lower and upper hinges (`5.2` and `6.9`). 
 
-Click on **Run Code** below to compare the `skimr` output to the boxplot we created above:
+Click on **Run Code** below to compare the box-plot to the `skimr` output we created above:
 
 ```{r prepare-ggp_boxplot_rating-skim, include=FALSE}
 source("https://bit.ly/3c6DfGe")
@@ -489,12 +489,71 @@ ggp_corr04_data <- CorrData04 %>%
 ggp_corr04_data
 ```
 
-## Map color
+## Using color
+
+We've created a scatter-plot of `length` and `rating`, but what if we want to add another variable to the relationship, like `mpaa`? 
+
+We can use `color` to differentiate between the mpaa ratings by mapping the color aesthetic in the `geom_point()`. 
+
+First we build the labels for the new plot:
+
+```{r labs_point_rating_length_mpaa, eval=FALSE}
+labs_point_rating_length_mpaa <- labs(
+        title = "Average IMDB user rating by movie length and MPAA rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating", 
+        color = "MPAA rating")
+```
 
 ```{r prepare-MovieData-map-color, include=FALSE}
 source("https://bit.ly/3c6DfGe")
 MovieData <- create_movie_data()
 MovieData <- filter(MovieData, !is.na(budget))
+```
+
+Add the `mpaa` variable to `geom_point()`, but be sure and place it *inside* the `aes()` function:
+
+```{r MovieData-map-color, exercise=TRUE, exercise.setup = "prepare-MovieData-map-color"}
+# create the labels 
+labs_point_rating_length_mpaa <- 
+# create scatter-plot
+MovieData %>% 
+    # map length and rating
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point(aes(color = )) + # add color aesthetic 
+     # add labels 
+     
+    # does adding color help explain the relationship?
+```
+
+A lot of the points on this graph are stacked on top of each other (called over-plotting), so we will add the `alpha` argument to `geom_point()` to adjust the opacity of each point. 
+
+```{r prepare-MovieData-alpha, include=FALSE}
+source("https://bit.ly/3c6DfGe")
+MovieData <- create_movie_data()
+MovieData <- filter(MovieData, !is.na(budget))
+labs_point_rating_length_mpaa <- labs(
+        title = "Average IMDB user rating by movie length and MPAA rating",
+        subtitle = "Data from ggplot2movies (http://imdb.com/)",
+        caption = "made with geom_point()",
+        x = "Movie length (in minutes)",
+        y = "Average IMDB User Rating", 
+        color = "MPAA rating")
+```
+
+The labels are available as `labs_point_rating_length_mpaa`.
+
+```{r MovieData-alpha, exercise=TRUE, exercise.setup = "prepare-MovieData-alpha"}
+# create scatter-plot
+MovieData %>% 
+    # map length and rating
+    ggplot(aes(x = length, y = rating)) + 
+    geom_point(aes(color = mpaa), alpha = ) + # add alpha as 1/3 
+     # add labels (labs_point_rating_length_mpaa)
+    
+    # did the alpha improve the visibility of the points?
 ```
 
 

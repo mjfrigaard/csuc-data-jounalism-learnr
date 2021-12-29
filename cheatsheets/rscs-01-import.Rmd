@@ -1,0 +1,83 @@
+---
+title: "*Data import with readr, readxl, and googlesheets4 cheatsheet*"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+    df_print: default
+    includes:
+      in_header: resizer.html
+runtime: shiny_prerendered
+description: >
+  Import data from .csv, .xlsx, and googlesheets.
+---
+
+```{r setup, include = FALSE}
+library(learnr)
+library(tidyverse)
+library(skimr)
+library(knitr)
+knitr::opts_chunk$set(error = TRUE,
+  upload.fun = imgur_upload, 
+  exercise.cap = "import cheatseet")
+```
+
+> "The tidyverse provides several packages for importing data into R and this cheatsheet covers three of them."
+
+
+## The cheatsheet 
+
+Access the cheatsheet [here](https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf).
+
+This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
+
+These exercises assume you have a `data/` folder in your current working directory, and that you're (hopefully) using RStudio projects. 
+
+You can download the data uses in this example [here.]() 
+
+## Read Tabular Data with `readr` 
+
+The readr package is part of the `tidyverse`, which we will load below:
+
+```{r packages, eval=FALSE}
+library(tidyverse)
+```
+
+The data file locations are printed below: 
+
+```{r , eval=FALSE}
+# data/
+#   ├── file.csv
+#   ├── file.tsv
+#   ├── file.txt
+#   └── file2.csv
+```
+
+
+### Read delimited files 
+
+> " Read files with any delimiter. If no delimiter is specified, it will automatically guess"
+
+This will import the data from the folder path below: 
+
+```{r read_delim-file-txt, exercise=TRUE}
+readr::read_delim(file = "data/file.txt")
+```
+
+
+
+### Useful Read Arguments
+
+## Column Specification with `readr`
+
+## Save Data with `readr`
+
+## Import spreadsheets with `readxl`
+
+## Import spreadsheets with `googlesheets4`
+
+## Conclusion
+
+We've covered atomic vectors in these exercises--next up we will review R's S3 atomic vectors.
+
+<div data-iframe-height></div>
