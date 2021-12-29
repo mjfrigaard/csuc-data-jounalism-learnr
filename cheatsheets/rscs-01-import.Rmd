@@ -1,5 +1,5 @@
 ---
-title: "*Data import with readr, readxl, and googlesheets4 cheatsheet*"
+title: "*Data import with readr, readxl, and googlesheets4*"
 output: 
   learnr::tutorial:
     progressive: true
@@ -20,6 +20,7 @@ library(knitr)
 # pipe url: https://bit.ly/3Hqfg2p ----
 # CSV url: https://bit.ly/3qCpgyA ----
 # CSV2 url: https://bit.ly/3pDQZzI ----
+# TSV url: https://bit.ly/32yAdt6 ----
 knitr::opts_chunk$set(error = TRUE,
   upload.fun = imgur_upload, 
   exercise.cap = "import cheatseet")
@@ -31,6 +32,14 @@ knitr::opts_chunk$set(error = TRUE,
 ## The cheatsheet 
 
 Access the cheatsheet [here](https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf).
+
+```{r 01-import-p1.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/01-import-p1.png")
+```
+
+```{r 01-import-p2.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/01-import-p2.png")
+```
 
 This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
 
@@ -47,7 +56,7 @@ library(tidyverse)
 
 Assume each data file is located in a `data/` folder like the one printed below: 
 
-```{r , eval=FALSE}
+```{r data-tree, eval=FALSE}
 # data/
 #   ├── file.csv
 #   ├── file.tsv
@@ -56,7 +65,11 @@ Assume each data file is located in a `data/` folder like the one printed below:
 ```
 
 
-### Read delimited files 
+## Read delimited files 
+
+There are four primary functions for importing delimited files: `read_delim()`, `read_csv()`, `read_csv2()`, and `read_tsv()`
+
+### Delimited files 
 
 > "Read files with any delimiter. If no delimiter is specified, it will automatically guess"
 
@@ -71,6 +84,8 @@ These are sometimes called [pipe-delimited flat files](https://en.wikipedia.org/
 Click 'Run Code' to see the imported file:
 
 ```{r read_delim-file-txt, exercise=TRUE}
+# identical to:
+# readr::read_delim(file = "data/file.txt")
 readr::read_delim(file = "https://bit.ly/3Hqfg2p")
 ```
 
@@ -85,6 +100,8 @@ Delimiter: "|"
 dbl (3): A, B, C
 ```
 
+### Comma-separated values files
+
 > "Read a comma delimited file with period decimal marks"
 
 The `read_csv()` function will import a comma-separated values (csv) file, like the one we have in `data/file.csv`:
@@ -96,8 +113,14 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 Click 'Run Code' to see the imported file:
 
 ```{r file-csv-read_csv, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv")
 read_csv("https://bit.ly/3qCpgyA")
 ```
+
+### Semicolon-separated values files (decimal formats)
+
+> "Read semicolon delimited files with comma decimal marks."
 
 Some datasets (like those from Sweden or Germany), will use commas for decimals (i.e. `0.5` = `0,5`) and semicolons as a delimiter (instead of pipes, tabs, or commas).
 
@@ -110,6 +133,8 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 To import these files, use the `read_csv2()` function. Click 'Run Code' to see the imported file:
 
 ```{r read_csv2-file2-csv, exercise=TRUE}
+# identical to:
+# readr::read_csv2(file = "data/file2.csv")
 read_csv2("https://bit.ly/3pDQZzI")
 ```
 
@@ -122,7 +147,35 @@ Rows: 2 Columns: 3
  Delimiter: ";"
 ```
 
-### Useful Read Arguments
+### Tab-separated values files
+
+> "Read a tab delimited file."
+
+Tab-separated files are similar to comma-separated value files, except instead of using commas to delimit each value, they use tabs. In a text editor, these files appear to have white space between the values:
+
+```{r file-tsv-png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-tsv.png")
+```
+
+But the white space contains a tab (a special character identified as `\t`). Click 'Run Code' to see the imported file:
+
+```{r read_tsv-file-tsv, exercise=TRUE}
+# identical to:
+# readr::read_tsv(file = "data/file.tsv")
+read_tsv("https://bit.ly/32yAdt6")
+```
+
+### Delimited files (notes)
+
+All data imported with `readr` functions are imported as a `tibble`. 
+
+```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/read-delim-specs.png")
+```
+
+`readr` gives us a lot of information whenever it imports a file. Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
+
+## Useful Read Arguments
 
 ## Column Specification with `readr`
 
