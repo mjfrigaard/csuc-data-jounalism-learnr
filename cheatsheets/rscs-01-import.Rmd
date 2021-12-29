@@ -32,8 +32,7 @@ Access the cheatsheet [here](https://github.com/rstudio/cheatsheets/blob/main/da
 This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
 
 These exercises assume you have a `data/` folder in your current working directory, and that you're (hopefully) using RStudio projects. 
-
-You can download the data uses in this example [here.]() 
+You can download the data uses in this example [here.](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/data) 
 
 ## Read Tabular Data with `readr` 
 
@@ -43,7 +42,7 @@ The readr package is part of the `tidyverse`, which we will load below:
 library(tidyverse)
 ```
 
-The data file locations are printed below: 
+Assume each data file is located in a `data/` folder like the one printed below: 
 
 ```{r , eval=FALSE}
 # data/
@@ -58,11 +57,18 @@ The data file locations are printed below:
 
 > " Read files with any delimiter. If no delimiter is specified, it will automatically guess"
 
-This will import the data from the folder path below: 
+All `readr` functions will import data from a local file or web URL. Below we use a URL for the `file.txt` data, which has the following structure: 
+
+```{r}
+# knitr::include_graphics(path = "")
+```
+
 
 ```{r read_delim-file-txt, exercise=TRUE}
-readr::read_delim(file = "data/file.txt")
+readr::read_delim(file = "https://bit.ly/3Hqfg2p")
 ```
+
+the `data/file.txt` folder path below:
 
 
 
