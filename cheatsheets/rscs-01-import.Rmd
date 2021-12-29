@@ -17,6 +17,9 @@ library(learnr)
 library(tidyverse)
 library(skimr)
 library(knitr)
+# pipe url: https://bit.ly/3Hqfg2p ----
+# CSV url: https://bit.ly/3qCpgyA ----
+# CSV2 url: https://bit.ly/3pDQZzI ----
 knitr::opts_chunk$set(error = TRUE,
   upload.fun = imgur_upload, 
   exercise.cap = "import cheatseet")
@@ -55,22 +58,69 @@ Assume each data file is located in a `data/` folder like the one printed below:
 
 ### Read delimited files 
 
-> " Read files with any delimiter. If no delimiter is specified, it will automatically guess"
+> "Read files with any delimiter. If no delimiter is specified, it will automatically guess"
 
 All `readr` functions will import data from a local file or web URL. Below we use a URL for the `file.txt` data, which has the following structure: 
 
-```{r}
-# knitr::include_graphics(path = "")
+```{r file-txt.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-txt.png")
 ```
 
+These are sometimes called [pipe-delimited flat files](https://en.wikipedia.org/wiki/Delimiter-separated_values), and their extension is usually `.txt` or `.dat`.
+
+Click 'Run Code' to see the imported file:
 
 ```{r read_delim-file-txt, exercise=TRUE}
 readr::read_delim(file = "https://bit.ly/3Hqfg2p")
 ```
 
-the `data/file.txt` folder path below:
+As we can see, if we do not specify a `delim =` argument, `read_delim()` will guess based on the contents of `data/file.txt`.
 
+When the data are imported, we are told what `read_delim()` guessed:
 
+```
+Rows: 2 Columns: 3
+── Column specification ──────────────────
+Delimiter: "|"
+dbl (3): A, B, C
+```
+
+> "Read a comma delimited file with period decimal marks"
+
+The `read_csv()` function will import a comma-separated values (csv) file, like the one we have in `data/file.csv`:
+
+```{r file-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-csv.png")
+```
+
+Click 'Run Code' to see the imported file:
+
+```{r file-csv-read_csv, exercise=TRUE}
+read_csv("https://bit.ly/3qCpgyA")
+```
+
+Some datasets (like those from Sweden or Germany), will use commas for decimals (i.e. `0.5` = `0,5`) and semicolons as a delimiter (instead of pipes, tabs, or commas).
+
+We have an example in `data/file2.csv`:
+
+```{r file2-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file2-csv.png")
+```
+
+To import these files, use the `read_csv2()` function. Click 'Run Code' to see the imported file:
+
+```{r read_csv2-file2-csv, exercise=TRUE}
+read_csv2("https://bit.ly/3pDQZzI")
+```
+
+As we can see, readr tells us what was used as a `decimal` (as well as the `grouping mark`) and the `delimiter`
+
+```
+Using "','" as decimal and "'.'" as grouping mark.
+Rows: 2 Columns: 3
+ ── Column specification ───────────────
+ Delimiter: ";"
+```
 
 ### Useful Read Arguments
 
