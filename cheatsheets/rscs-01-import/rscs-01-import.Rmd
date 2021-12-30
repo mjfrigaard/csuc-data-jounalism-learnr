@@ -15,12 +15,13 @@ description: >
 ```{r setup, include = FALSE}
 library(learnr)
 library(tidyverse)
+library(googlesheets4)
 library(skimr)
 library(knitr)
-# pipe url: https://bit.ly/3Hqfg2p ----
-# CSV url: https://bit.ly/3qCpgyA ----
-# CSV2 url: https://bit.ly/3pDQZzI ----
-# TSV url: https://bit.ly/32yAdt6 ----
+# pipe url: https://bit.ly/01-file-txt ----
+# CSV url: https://bit.ly/01-file-csv ----
+# CSV2 url: https://bit.ly/01-file2-csv ----
+# TSV url: https://bit.ly/01-file-tsv ----
 knitr::opts_chunk$set(error = TRUE,
   upload.fun = imgur_upload, 
   exercise.cap = "import cheatseet")
@@ -28,39 +29,40 @@ knitr::opts_chunk$set(error = TRUE,
 
 > "The tidyverse provides several packages for importing data into R and this cheatsheet covers three of them."
 
-
 ## The cheatsheet 
 
 Access the cheatsheet [here](https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf).
 
-```{r 01-import-p1.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/01-import-p1.png")
+```{r 01-import-p1.png, echo=FALSE, fig.align='left', out.height='80%', out.width='80%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/01-import-p1.png")
 ```
 
-```{r 01-import-p2.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/01-import-p2.png")
+```{r 01-import-p2.png, echo=FALSE, fig.align='right', out.height='80%', out.width='80%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/01-import-p2.png")
 ```
 
 This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
 
-These exercises assume you have a `data/` folder in your current working directory, and that you're (hopefully) using RStudio projects. 
+Below we install and load the packages:
 
-```{r files-folder.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/files-folder.png")
+```{r packages, eval=FALSE}
+install.packages(c("readr", "googlesheets4"))
+library(readr)
+library(googlesheets4)
 ```
 
-
-You can download the data uses in this example [here.](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/data/01-import/) 
 
 ## Read Tabular Data with `readr` 
 
-The readr package is part of the `tidyverse`, which we will load below:
+Below is an example of the data files on macOS. We can see each file name and extension is associated with a different 'Kind' (or type).
 
-```{r packages, eval=FALSE}
-library(tidyverse)
+```{r files-folder.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/files-folder.png")
 ```
 
-Assume each data file is located in a `data/01-import` folder like the one printed below: 
+You can download the data uses in this example [here](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/rscs-01-import/data).
+
+We'll assume each data file is located in a `data/` folder like the one printed below: 
 
 ```{r data-tree, eval=FALSE}
 # data/
@@ -79,10 +81,10 @@ There are four primary functions for importing delimited files: `read_delim()`, 
 
 > "Read files with any delimiter. If no delimiter is specified, it will automatically guess"
 
-All `readr` functions will import data from a local file or web URL. Below we use a URL for the `file.txt` data, which has the following structure: 
+All `readr` functions will import data from a local file *or* web URL. Below we use a URL for the `file.txt` data, which has the following structure: 
 
 ```{r file-txt.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-txt.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-txt.png")
 ```
 
 These are sometimes called [pipe-delimited flat files](https://en.wikipedia.org/wiki/Delimiter-separated_values), and their extension is usually `.txt` or `.dat`.
@@ -92,19 +94,19 @@ Click 'Run Code' to see the imported file:
 ```{r read_delim-file-txt, exercise=TRUE}
 # identical to:
 # readr::read_delim(file = "data/file.txt")
-readr::read_delim(file = "https://bit.ly/3Hqfg2p")
+readr::read_delim(file = "https://bit.ly/01-file-txt")
 ```
 
 As we can see, if we do not specify a `delim =` argument, `read_delim()` will guess based on the contents of `data/file.txt`.
 
-When the data are imported, we are told what `read_delim()` guessed:
+If we do provide the `delim =` argument, just remember to include it in quotes (`"|"`):
 
+```{r read_delim-file-txt-delim, exercise=TRUE}
+# identical to:
+# readr::read_delim(file = "data/file.txt", delim = "|")
+readr::read_delim(file = "https://bit.ly/01-file-txt", delim = "|")
 ```
-Rows: 2 Columns: 3
-── Column specification ──────────────────
-Delimiter: "|"
-dbl (3): A, B, C
-```
+
 
 ### Comma-separated values files
 
@@ -113,7 +115,7 @@ dbl (3): A, B, C
 The `read_csv()` function will import a comma-separated values (csv) file, like the one we have in `data/file.csv`:
 
 ```{r file-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-csv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png")
 ```
 
 Click 'Run Code' to see the imported file:
@@ -121,7 +123,7 @@ Click 'Run Code' to see the imported file:
 ```{r file-csv-read_csv, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv")
-read_csv("https://bit.ly/3qCpgyA")
+read_csv("https://bit.ly/01-file-csv")
 ```
 
 ### Semicolon-separated values files (decimal formats)
@@ -133,7 +135,7 @@ Some datasets (like those from Sweden or Germany), will use commas for decimals 
 We have an example in `data/file2.csv`:
 
 ```{r file2-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file2-csv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file2-csv.png")
 ```
 
 To import these files, use the `read_csv2()` function. Click 'Run Code' to see the imported file:
@@ -141,7 +143,7 @@ To import these files, use the `read_csv2()` function. Click 'Run Code' to see t
 ```{r read_csv2-file2-csv, exercise=TRUE}
 # identical to:
 # readr::read_csv2(file = "data/file2.csv")
-read_csv2("https://bit.ly/3pDQZzI")
+read_csv2("https://bit.ly/01-file2-csv")
 ```
 
 As we can see, readr tells us what was used as a `decimal` (as well as the `grouping mark`) and the `delimiter`
@@ -160,7 +162,7 @@ Rows: 2 Columns: 3
 Tab-separated files are similar to comma-separated value files, except instead of using commas to delimit each value, they use tabs. In a text editor, these files appear to have white space between the values:
 
 ```{r file-tsv-png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/file-tsv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-tsv.png")
 ```
 
 But the white space contains a tab (a special character identified as `\t`). Click 'Run Code' to see the imported file:
@@ -168,7 +170,7 @@ But the white space contains a tab (a special character identified as `\t`). Cli
 ```{r read_tsv-file-tsv, exercise=TRUE}
 # identical to:
 # readr::read_tsv(file = "data/file.tsv")
-read_tsv("https://bit.ly/32yAdt6")
+read_tsv("https://bit.ly/01-file-tsv")
 ```
 
 ### Delimited files (notes)
@@ -176,7 +178,7 @@ read_tsv("https://bit.ly/32yAdt6")
 All data imported with `readr` functions are imported as a `tibble`. 
 
 ```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/read-delim-specs.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/read-delim-specs.png")
 ```
 
 `readr` gives us a lot of information whenever it imports a file. Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
