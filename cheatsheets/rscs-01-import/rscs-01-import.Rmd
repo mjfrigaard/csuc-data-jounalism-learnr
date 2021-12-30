@@ -365,7 +365,7 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 
 > "Use names, position, or selection helpers."
 
-```{r show_col_types, exercise=TRUE}
+```{r col_select, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", show_col_types = FALSE)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
@@ -373,15 +373,111 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 ```
 
 
+### Column specifications (notes)
+
+Most of these options are available from the data import GUI in the **Environment** pane. After clicking on *Import Dataset*, you'll select *From Text (readr)*. Click on *Browse* and navigate to a plain text file (the `file.csv` is show below as an example):
+
+```{r import-readr-gui-path.png, echo=FALSE, fig.align='center', out.height='80%', out.width='80%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-path.png")
+```
+
+You'll see a preview of the data file in the **Data Preview** section, with each column name and format. I've indicated the options we've covered in the **Import Options** section: 
+
+```{r import-readr-gui-options.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-options.png")
+```
+
+Next to the **Import Options** there is a **Code Preview** section that will create the code needed to import what you see in the **Data Preview** section. 
+
+```{r import-readr-gui-code.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-code.png")
+```
+
+Changes to the **Import Options** will cause changes in the **Code Preview**. Below I change the *Skip*, *First Row as Names*, and *Open Data Viewer* options: 
+
+```{r import-readr-gui-options-alt.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-options-alt.png")
+```
+
+And we can see the corresponding changes to the **Code Preview** section:
+
+```{r import-readr-gui-code-alt.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-code-alt.png")
+```
+
+Using the GUI is a helpful tool for learning how the R code works for importing code!
 
 
 ## Save Data with `readr`
 
-## Import spreadsheets with `readxl`
+To export data with `readr`, we can use any of the corresponding `write_*()` functions. Each of these take an object in the current environment (`x`) and the desired `file` path (including the file extension):
+
+> "Write files with any delimiter."
+
+
+```{r write_delim-file_txt, eval=FALSE, echo=TRUE}
+# read from data/
+file_txt <- readr::read_delim(file = "data/file.txt")
+# export to from processed-data/
+write_delim(file_txt, file = "processed-data/file_txt.txt", delim = "|")
+```
+
+ 
+> "Write a comma delimited file."
+
+```{r file_csv-write_csv, eval=FALSE, echo=TRUE}
+# read from data/
+file_csv <- readr::read_csv(file = "data/file.csv")
+# export to from processed-data/
+write_csv(x = file_csv, file = "processed-data/file_csv.csv") 
+```
+
+
+> "Write a semicolon delimited file."
+
+```{r file2_csv-write_csv2, eval=FALSE, echo=TRUE}
+# read from data/
+file2_csv <- readr::read_csv2(file = "data/file2.csv")
+# export to from processed-data/
+write_csv2(x = file2_csv, file  "processed-data/file2_csv.csv")
+```
+
+
+> "Write a tab delimited file."
+
+```{r file_tsv-write_tsv, eval=FALSE, echo=TRUE}
+# read from data/
+file_tsv <- readr::read_tsv(file = "data/file.tsv")
+# export to from processed-data/
+write_tsv(x = file_tsv, file = "processed-data/file_tsv.tsv") 
+```
+
+
+## Import data with `readxl`
+
+Microsoft Excel files are commonly used for data entry and storage. Despite being a proprietary format, we're able to import these files using the `readxl` package. 
+
+### Read files 
+
+`readxl` comes with three functions for reading Excel data: `readxl::read_excel()`, `readxl::read_xls()`, and `readxl::read_xlxs()`
 
 
 
-## Import spreadsheets with `googlesheets4`
+### Read sheets 
+
+### Column specification 
+
+### Write sheets 
+
+## Import data with `googlesheets4`
+
+### Read sheets 
+
+### Metadata 
+
+### Column specifications 
+
+### Write sheets 
 
 ## Conclusion
 
