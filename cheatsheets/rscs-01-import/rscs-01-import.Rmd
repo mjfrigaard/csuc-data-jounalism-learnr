@@ -22,6 +22,9 @@ library(knitr)
 # CSV url: https://bit.ly/01-file-csv ----
 # CSV2 url: https://bit.ly/01-file2-csv ----
 # TSV url: https://bit.ly/01-file-tsv ----
+# f1.csv: https://bit.ly/01-f1-csv ----
+# f2.csv: https://bit.ly/01-f2-csv ----
+# f3.csv: 
 knitr::opts_chunk$set(error = TRUE,
   upload.fun = imgur_upload, 
   exercise.cap = "import cheatseet")
@@ -221,7 +224,24 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 
 ### Skip lines 
 
+If we want to only read a subset of the rows in our dataset, we can use the `skip` argument and give a number of the lines we'd like to omit. 
+
+```{r skip-lines, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", skip = 1)
+readr::read_csv(file = "https://bit.ly/01-file-csv", skip = 1)
+```
+
 ### Import multiple files 
+
+We can also import multiple .csv files using a single call to `read_csv()`. Simply combine the names of the files in the `file` argument (in this case, it's three URLs.)
+
+
+
+```{r}
+
+```
+
 
 
 
