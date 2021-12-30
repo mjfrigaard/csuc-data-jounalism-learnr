@@ -44,7 +44,13 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
 
 These exercises assume you have a `data/` folder in your current working directory, and that you're (hopefully) using RStudio projects. 
-You can download the data uses in this example [here.](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/data) 
+
+```{r files-folder.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/files-folder.png")
+```
+
+
+You can download the data uses in this example [here.](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/data/01-import/) 
 
 ## Read Tabular Data with `readr` 
 
@@ -54,7 +60,7 @@ The readr package is part of the `tidyverse`, which we will load below:
 library(tidyverse)
 ```
 
-Assume each data file is located in a `data/` folder like the one printed below: 
+Assume each data file is located in a `data/01-import` folder like the one printed below: 
 
 ```{r data-tree, eval=FALSE}
 # data/
