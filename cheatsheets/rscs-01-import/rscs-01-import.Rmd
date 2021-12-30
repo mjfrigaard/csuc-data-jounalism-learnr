@@ -24,7 +24,7 @@ library(knitr)
 # TSV url: https://bit.ly/01-file-tsv ----
 # f1.csv: https://bit.ly/01-f1-csv ----
 # f2.csv: https://bit.ly/01-f2-csv ----
-# f3.csv: 
+# f3.csv: https://bit.ly/01-f3-csv ----
 knitr::opts_chunk$set(error = TRUE,
   upload.fun = imgur_upload, 
   exercise.cap = "import cheatseet")
@@ -239,7 +239,7 @@ We can also import multiple .csv files using a single call to `read_csv()`. Simp
 
 
 ```{r}
-
+readr::read_csv(file = c("https://bit.ly/01-f1-csv", "https://bit.ly/01-f2-csv", "https://bit.ly/01-f3-csv"), id = 'origin_file')
 ```
 
 
