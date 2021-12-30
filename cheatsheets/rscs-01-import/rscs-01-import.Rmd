@@ -66,6 +66,9 @@ We'll assume each data file is located in a `data/` folder like the one printed 
 
 ```{r data-tree, eval=FALSE}
 # data/
+#   ├── f1.csv
+#   ├── f2.csv
+#   ├── f3.csv
 #   ├── file.csv
 #   ├── file.tsv
 #   ├── file.txt
@@ -176,15 +179,53 @@ read_tsv("https://bit.ly/01-file-tsv")
 
 ### Delimited files (notes)
 
-All data imported with `readr` functions are imported as a `tibble`. 
+A few things to note when importing 'Text' files with `readr`: 
+
+1. All data imported with `readr` functions are imported as a `tibble`.
+
+2. `readr` gives us a lot of information whenever it imports a file (see below):
 
 ```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/read-delim-specs.png")
 ```
 
-`readr` gives us a lot of information whenever it imports a file. Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
+Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
 
 ## Useful Read Arguments
+
+In this section we'll cover some additional arguments to give you more control over your imported datasets. 
+
+### Column names (Headers)
+
+If your dataset doesn't have column names, you can omit these with `col_names = FALSE`
+
+```{r col_names, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", 
+#                 col_names = FALSE)
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                col_names = FALSE)
+```
+
+The default behavior is to name these columns `X1`, `X2`, `X3`, etc. However, you can also specify the column names as a string vector (i.e., `c("x", "y", "z")`)
+
+```{r supply-col_names, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", 
+#                   col_names = c("x", "y", "z"))
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                col_names = c("x", "y", "z"))
+```
+
+
+
+### Skip lines 
+
+### Import multiple files 
+
+
+
+
 
 ## Column Specification with `readr`
 
