@@ -185,19 +185,19 @@ readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;)</code></pre>
 <p>If we do provide the <code>delim =</code> argument, just remember to include it in quotes (<code>"|"</code>):</p>
 <div class="tutorial-exercise" data-label="read_delim-file-txt-delim" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
-# readr::read_delim(file = &quot;data/file.txt&quot;)
+# readr::read_delim(file = &quot;data/file.txt&quot;, delim = &quot;|&quot;)
 readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;, delim = &quot;|&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
-<div id="section-comma-separated-values-files" class="section level3">
-<h3>Comma-separated values files</h3>
+<div id="section-comma-separated-values-files-period-decimals" class="section level3">
+<h3>Comma-separated values files (period decimals)</h3>
 <blockquote>
 <p>“Read a comma delimited file with period decimal marks”</p>
 </blockquote>
 <p>The <code>read_csv()</code> function will import a comma-separated values (csv) file, like the one we have in <code>data/file.csv</code>:</p>
 <p><img src="https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png" width="50%" height="50%" style="display: block; margin: auto;" /></p>
-<p>Click ‘Run Code’ to see the imported file:</p>
+<p>We’ve added a few decimal point values for demonstration purposes. Click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="file-csv-read_csv" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;)
@@ -205,8 +205,8 @@ read_csv(&quot;https://bit.ly/01-file-csv&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
-<div id="section-semicolon-separated-values-files-decimal-formats" class="section level3">
-<h3>Semicolon-separated values files (decimal formats)</h3>
+<div id="section-semicolon-separated-values-files-comma-decimals" class="section level3">
+<h3>Semicolon-separated values files (comma decimals)</h3>
 <blockquote>
 <p>“Read semicolon delimited files with comma decimal marks.”</p>
 </blockquote>

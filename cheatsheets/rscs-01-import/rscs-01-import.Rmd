@@ -75,7 +75,9 @@ We'll assume each data file is located in a `data/` folder like the one printed 
 
 ## Read delimited files 
 
-There are four primary functions for importing delimited files: `read_delim()`, `read_csv()`, `read_csv2()`, and `read_tsv()`
+There are four primary functions for importing delimited files: `read_delim()`, `read_csv()`, `read_csv2()`, and `read_tsv()`. 
+
+These functions are designed to work with plain text files. We can also import plain text files in the **Environment** pane (see below:)
 
 ### Delimited files 
 
@@ -108,7 +110,7 @@ readr::read_delim(file = "https://bit.ly/01-file-txt", delim = "|")
 ```
 
 
-### Comma-separated values files
+### Comma-separated values files (period decimals)
 
 > "Read a comma delimited file with period decimal marks"
 
@@ -118,7 +120,7 @@ The `read_csv()` function will import a comma-separated values (csv) file, like 
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png")
 ```
 
-Click 'Run Code' to see the imported file:
+We've added a few decimal point values for demonstration purposes. Click 'Run Code' to see the imported file:
 
 ```{r file-csv-read_csv, exercise=TRUE}
 # identical to:
@@ -126,7 +128,7 @@ Click 'Run Code' to see the imported file:
 read_csv("https://bit.ly/01-file-csv")
 ```
 
-### Semicolon-separated values files (decimal formats)
+### Semicolon-separated values files (comma decimals)
 
 > "Read semicolon delimited files with comma decimal marks."
 
@@ -146,14 +148,7 @@ To import these files, use the `read_csv2()` function. Click 'Run Code' to see t
 read_csv2("https://bit.ly/01-file2-csv")
 ```
 
-As we can see, readr tells us what was used as a `decimal` (as well as the `grouping mark`) and the `delimiter`
-
-```
-Using "','" as decimal and "'.'" as grouping mark.
-Rows: 2 Columns: 3
- ── Column specification ───────────────
- Delimiter: ";"
-```
+As we can see, `readr` tells us what was used as a `decimal` (as well as the `grouping mark`) and the `delimiter`.
 
 ### Tab-separated values files
 
