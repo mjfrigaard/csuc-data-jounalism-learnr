@@ -169,7 +169,7 @@ read_tsv("https://bit.ly/32yAdt6")
 
 All data imported with `readr` functions are imported as a `tibble`. 
 
-```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/img/read-delim-specs.png")
 ```
 
