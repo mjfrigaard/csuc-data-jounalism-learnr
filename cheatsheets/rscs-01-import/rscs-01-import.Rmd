@@ -172,12 +172,27 @@ Tab-separated files are similar to comma-separated value files, except instead o
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-tsv.png")
 ```
 
-But the white space contains a tab (a special character identified as `\t`). Click 'Run Code' to see the imported file:
+You might be wondering how `readr` can differentiate the white space *between values on the same line* and the white space *between rows*. This is because the white space between values contains a tab, which is a [special character](https://en.wikipedia.org/wiki/Tab_key#Tab_characters) used to identify tabs (`\t`). This is different from the invisible character used to identify a new row (or [Newline](https://en.wikipedia.org/wiki/Newline)), which  is `\n`.
+
+Click 'Run Code' to see the imported file:
 
 ```{r read_tsv-file-tsv, exercise=TRUE}
 # identical to:
 # readr::read_tsv(file = "data/file.tsv")
 read_tsv("https://bit.ly/01-file-tsv")
+```
+
+
+This comes in handy, because it means we can manually type the contents of a text file *directly* into any `read_*()` functions. Try it below: 
+
+```markdown
+# copy the lines below:
+A\tB\tC\n1.5\t2\t3\n4.5\t5\tNA
+```
+
+```{r copy-readr, exercise=TRUE}
+# paste the data between the quotes in read_delim()
+readr::read_delim(file = "paste here")
 ```
 
 ### Delimited files (notes)
@@ -194,11 +209,16 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 
 Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
 
+
+
+
 ## Useful Read Arguments
 
 In this section we'll cover some additional arguments to give you more control over your imported datasets. 
 
 ### Column names (Headers)
+
+> "No header."
 
 If your dataset doesn't have column names, you can omit these with `col_names = FALSE`
 
@@ -210,6 +230,8 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
                 col_names = FALSE)
 ```
 
+> "Provide header."
+
 The default behavior is to name these columns `X1`, `X2`, `X3`, etc. However, you can also specify the column names as a string vector (i.e., `c("x", "y", "z")`)
 
 ```{r supply-col_names, exercise=TRUE}
@@ -220,38 +242,144 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
                 col_names = c("x", "y", "z"))
 ```
 
-
-
 ### Skip lines 
 
-If we want to only read a subset of the rows in our dataset, we can use the `skip` argument and give a number of the lines we'd like to omit. 
+If there are lines we'd like to omit from our data file, we can use the `skip` argument and give a number of the lines we'd like to exclude.  
 
 ```{r skip-lines, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", skip = 1)
-readr::read_csv(file = "https://bit.ly/01-file-csv", skip = 1)
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                skip = 1)
 ```
 
 ### Import multiple files 
 
-We can also import multiple .csv files using a single call to `read_csv()`. Simply combine the names of the files in the `file` argument (in this case, it's three URLs.)
+> "Read multiple files into a single table."
+
+We can also import multiple .csv files using a single call to `read_csv()`. Simply combine the names of the files in the `file` argument (in this case, it's three URLs.). We also supply an `id` argument, which will allow us to identify the original data file. 
+
+```{r id-multiple, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = c("data/f1.csv", "data/f2.csv", "data/f3.csv"), 
+#                 id = 'origin_file')
+readr::read_csv(file = c("https://bit.ly/01-f1-csv", 
+                         "https://bit.ly/01-f2-csv", 
+                        "https://bit.ly/01-f3-csv"), 
+                        id = 'origin_file')
+```
+
+### Control imported rows
+
+> "Read a subset of lines."
+
+If we have a large dataset and would like to control the number of imported rows, we can use the `n_max` argument to set the maximum number of lines to read: 
+
+```{r n_max, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", n_max = 2)
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                n_max = 2)
+```
+
+### Set missing values 
+
+> "Read values as missing."
+
+We can also specify the values we'd like to set as 'missing'. By default, R detects `NA` as missing, but we can set this to whatever we want with the `na` argument (note that this needs to be a string).
+
+```{r na, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", na = c("1"))
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                na = c("1"))
+```
 
 
+### Control formatting
 
-```{r}
-readr::read_csv(file = c("https://bit.ly/01-f1-csv", "https://bit.ly/01-f2-csv", "https://bit.ly/01-f3-csv"), id = 'origin_file')
+> "Specify decimal marks."
+
+Data conventions vary from place to place (as we saw before with the `file2.csv` example above). The `locale` argument gives us the ability to change the time zone, encoding, decimal mark, day/month names and more. 
+
+The syntax is a little tricky--you'll actually use the `local` argument with the `locale()` function, like so:
+
+```{r locale-decimal_mark, exercise=TRUE}
+# identical to:
+# read_delim(file = "data/file2.csv", 
+#            locale = locale(decimal_mark = ","))
+read_delim(file = "https://bit.ly/01-file2-csv", 
+            locale = locale(decimal_mark = ","))
+```
+
+As we can see, the commas have been treated as decimals. 
+
+
+## Column Specification with `readr`
+
+As we've seen, `readr` display a lot of useful information on imported files. However, there is even more information in contained in the column specifications, or `spec`. We can also tell `reader` how to format the columns we're importing. 
+
+### Extract column specification
+
+> "Extract the full column specification for the given imported data frame."
+
+We can extract the column specifications using the `spec()` argument on the imported data file. 
+
+```{r spec-read_delim, eval=FALSE, echo=TRUE}
+file <- readr::read_delim(file = "age\tsex\tearn\n25\tM\t85.5\n32\tF\t92.75")
+file
+```
+
+```{r file, echo=FALSE, eval=TRUE}
+file <- readr::read_delim(file = "age\tsex\tearn\n25\tM\t85.5\n32\tF\t92.75", show_col_types = FALSE)
+rmarkdown::paged_table(file)
+```
+
+
+```{r setup-file, include=FALSE}
+file <- readr::read_delim(file = "age\tsex\tearn\n25\tM\t85.5\n32\tF\t92.75", show_col_types = FALSE)
+```
+
+
+```{r ex-file, exercise.setup = "setup-file", exercise=TRUE}
+# pass the 'file' to spec()
+spec(x = )
+```
+
+
+### Hide column specification
+
+> "Hide col spec message."
+
+If we don't want to see the output from the column specification, we can hide this using the `show_col_types = FALSE` argument: 
+
+```{r show_col_types, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", show_col_types = FALSE)
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                show_col_types = FALSE)
+```
+
+
+### Select columns to import
+
+> "Use names, position, or selection helpers."
+
+```{r show_col_types, exercise=TRUE}
+# identical to:
+# readr::read_csv(file = "data/file.csv", show_col_types = FALSE)
+readr::read_csv(file = "https://bit.ly/01-file-csv", 
+                col_select = c(A, C))
 ```
 
 
 
 
-
-
-## Column Specification with `readr`
-
 ## Save Data with `readr`
 
 ## Import spreadsheets with `readxl`
+
+
 
 ## Import spreadsheets with `googlesheets4`
 
