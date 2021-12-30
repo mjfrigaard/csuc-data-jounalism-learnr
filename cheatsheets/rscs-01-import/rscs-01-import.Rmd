@@ -18,6 +18,7 @@ library(tidyverse)
 library(googlesheets4)
 library(skimr)
 library(knitr)
+library(readxl)
 # pipe url: https://bit.ly/01-file-txt ----
 # CSV url: https://bit.ly/01-file-csv ----
 # CSV2 url: https://bit.ly/01-file2-csv ----
@@ -113,12 +114,12 @@ readr::read_delim(file = "https://bit.ly/01-file-txt")
 
 As we can see, if we do not specify a `delim =` argument, `read_delim()` will guess based on the contents of `data/file.txt`.
 
-If we do provide the `delim =` argument, just remember to include it in quotes (`"|"`):
+Provide the `delim = ` argument, (just remember to include it in quotes)
 
 ```{r read_delim-file-txt-delim, exercise=TRUE}
 # identical to:
 # readr::read_delim(file = "data/file.txt", delim = "|")
-readr::read_delim(file = "https://bit.ly/01-file-txt", delim = "|")
+readr::read_delim(file = "https://bit.ly/01-file-txt", delim = )
 ```
 
 
@@ -132,12 +133,20 @@ The `read_csv()` function will import a comma-separated values (csv) file, like 
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png")
 ```
 
-We've added a few decimal point values for demonstration purposes. Click 'Run Code' to see the imported file:
+We've added a few decimal point values for demonstration purposes. 
+
+Copy the URL below and place it (in quotes) in the `file =` argument.
+
+```markdown
+https://bit.ly/01-file-csv
+```
+
+Click 'Run Code' to see the imported file:
 
 ```{r file-csv-read_csv, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv")
-read_csv("https://bit.ly/01-file-csv")
+read_csv(file = )
 ```
 
 ### Semicolon-separated values files (comma decimals)
@@ -152,12 +161,21 @@ We have an example in `data/file2.csv`:
 knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file2-csv.png")
 ```
 
-To import these files, use the `read_csv2()` function. Click 'Run Code' to see the imported file:
+To import these files, use the `read_csv2()` function. 
+
+
+Copy the URL below and place it (in quotes) in the `file =` argument.
+
+```markdown
+https://bit.ly/01-file2-csv
+```
+
+Click 'Run Code' to see the imported file:
 
 ```{r read_csv2-file2-csv, exercise=TRUE}
 # identical to:
 # readr::read_csv2(file = "data/file2.csv")
-read_csv2("https://bit.ly/01-file2-csv")
+read_csv2(file = )
 ```
 
 As we can see, `readr` tells us what was used as a `decimal` (as well as the `grouping mark`) and the `delimiter`.
@@ -174,12 +192,18 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 
 You might be wondering how `readr` can differentiate the white space *between values on the same line* and the white space *between rows*. This is because the white space between values contains a tab, which is a [special character](https://en.wikipedia.org/wiki/Tab_key#Tab_characters) used to identify tabs (`\t`). This is different from the invisible character used to identify a new row (or [Newline](https://en.wikipedia.org/wiki/Newline)), which  is `\n`.
 
+Copy the URL below and place it (in quotes) in the `file =` argument.
+
+```markdown
+https://bit.ly/01-file-tsv
+```
+
 Click 'Run Code' to see the imported file:
 
 ```{r read_tsv-file-tsv, exercise=TRUE}
 # identical to:
 # readr::read_tsv(file = "data/file.tsv")
-read_tsv("https://bit.ly/01-file-tsv")
+read_tsv(file = )
 ```
 
 
@@ -209,9 +233,6 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 
 Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
 
-
-
-
 ## Useful Read Arguments
 
 In this section we'll cover some additional arguments to give you more control over your imported datasets. 
@@ -220,37 +241,43 @@ In this section we'll cover some additional arguments to give you more control o
 
 > "No header."
 
-If your dataset doesn't have column names, you can omit these with `col_names = FALSE`
+If your dataset doesn't have column names, you can omit these with `col_names = FALSE`. 
+
+Remove the column names and click 'Run Code' to see the imported file:
 
 ```{r col_names, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", 
 #                 col_names = FALSE)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                col_names = FALSE)
+                col_names = )
 ```
 
 > "Provide header."
 
 The default behavior is to name these columns `X1`, `X2`, `X3`, etc. However, you can also specify the column names as a string vector (i.e., `c("x", "y", "z")`)
 
+Change the column names from `A`, `B`, `C` to `x`, `y`, `z` and click 'Run Code' to see the imported file:
+
 ```{r supply-col_names, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", 
 #                   col_names = c("x", "y", "z"))
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                col_names = c("x", "y", "z"))
+                col_names = )
 ```
 
 ### Skip lines 
 
 If there are lines we'd like to omit from our data file, we can use the `skip` argument and give a number of the lines we'd like to exclude.  
 
+Skip the first line and click 'Run Code' to see the imported file:
+
 ```{r skip-lines, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", skip = 1)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                skip = 1)
+                skip = )
 ```
 
 ### Import multiple files 
@@ -259,6 +286,8 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 
 We can also import multiple .csv files using a single call to `read_csv()`. Simply combine the names of the files in the `file` argument (in this case, it's three URLs.). We also supply an `id` argument, which will allow us to identify the original data file. 
 
+Provide a name for the `id` variable (in quotes) and click 'Run Code' to see the imported files. 
+
 ```{r id-multiple, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = c("data/f1.csv", "data/f2.csv", "data/f3.csv"), 
@@ -266,7 +295,7 @@ We can also import multiple .csv files using a single call to `read_csv()`. Simp
 readr::read_csv(file = c("https://bit.ly/01-f1-csv", 
                          "https://bit.ly/01-f2-csv", 
                         "https://bit.ly/01-f3-csv"), 
-                        id = 'origin_file')
+                        id = )
 ```
 
 ### Control imported rows
@@ -275,11 +304,13 @@ readr::read_csv(file = c("https://bit.ly/01-f1-csv",
 
 If we have a large dataset and would like to control the number of imported rows, we can use the `n_max` argument to set the maximum number of lines to read: 
 
+Set the maximum number of rows to `2` and click 'Run Code' to see the imported file.
+
 ```{r n_max, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", n_max = 2)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                n_max = 2)
+                n_max = )
 ```
 
 ### Set missing values 
@@ -288,11 +319,13 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 
 We can also specify the values we'd like to set as 'missing'. By default, R detects `NA` as missing, but we can set this to whatever we want with the `na` argument (note that this needs to be a string).
 
+Set the missing values to `1` (as a string) and click 'Run Code' to see the imported file.
+
 ```{r na, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", na = c("1"))
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                na = c("1"))
+                na = )
 ```
 
 
@@ -351,13 +384,15 @@ spec(x = )
 
 > "Hide col spec message."
 
-If we don't want to see the output from the column specification, we can hide this using the `show_col_types = FALSE` argument: 
+If we don't want to see the output from the column specification, we can hide this using the `show_col_types = ` argument: 
+
+Hide the column specifications using `show_col_types` and click 'Run Code' to see the imported file.
 
 ```{r show_col_types, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", show_col_types = FALSE)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                show_col_types = FALSE)
+                show_col_types = )
 ```
 
 
@@ -365,11 +400,13 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 
 > "Use names, position, or selection helpers."
 
+Import only the `A` and `C` columns (as `c(A, C)`) using the `col_select` argument and click 'Run Code' to see the imported file.
+
 ```{r col_select, exercise=TRUE}
 # identical to:
 # readr::read_csv(file = "data/file.csv", show_col_types = FALSE)
 readr::read_csv(file = "https://bit.ly/01-file-csv", 
-                col_select = c(A, C))
+                col_select = )
 ```
 
 
@@ -457,15 +494,62 @@ write_tsv(x = file_tsv, file = "processed-data/file_tsv.tsv")
 
 Microsoft Excel files are commonly used for data entry and storage. Despite being a proprietary format, we're able to import these files using the `readxl` package. 
 
+The data in this section are available at this [link](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/raw/main/cheatsheets/rscs-01-import/data/readxl/readxl-data.xlsx). 
+
+We'll proceed as though they've been downloaded into a local `data/readxl/` folder: 
+
+```{r setwd, echo=FALSE, results='hide'}
+getwd()
+setwd("/Users/mjfrigaard/Dropbox/@projects/high-priority/@data-journalism/course-website/csuc-data-jounalism-learnr/cheatsheets/rscs-01-import")
+```
+
+
 ### Read files 
 
-`readxl` comes with three functions for reading Excel data: `readxl::read_excel()`, `readxl::read_xls()`, and `readxl::read_xlxs()`
-
-
+`readxl` comes with three functions for reading Excel data: `read_excel()`, `read_xls()`, and `read_xlxs()`
 
 ### Read sheets 
 
+> "Get a vector of sheet names."
+
+```{r excel_sheets, eval=TRUE, echo=TRUE}
+excel_sheets(path = "data/readxl/readxl-data.xlsx")
+```
+
+> "Specify which sheet to read by position or name."
+
+Position is numeric, with `1` being the first sheet. 
+
+```{r read_excel-f1-position, eval=TRUE, echo=TRUE}
+read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = 1)
+```
+
+You can also provide the name of the sheet (from `excel_sheets()` above).
+
+```{r read_excel-f1-name, eval=TRUE, echo=TRUE}
+read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = "f1.csv")
+```
+
+### Read multiple sheets
+
+> 1. Get a vector of sheet names from the file path.  
+> 2. Set the vector names to be the sheet names.   
+> 3. Use `purrr::map_dfr()` to read multiple files into one data frame.  
+
+```{r imoport-multiple-excel, eval=TRUE, echo=TRUE}
+path <- "data/readxl/readxl-data.xlsx"
+path %>% 
+    excel_sheets() %>% 
+    purrr::set_names() %>% 
+    purrr::map_dfr(.x = ., .f = read_excel, path = path)
+```
+
+
 ### Column specification 
+
+
 
 ### Write sheets 
 

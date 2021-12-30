@@ -188,11 +188,11 @@ readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 <p>As we can see, if we do not specify a <code>delim =</code> argument, <code>read_delim()</code> will guess based on the contents of <code>data/file.txt</code>.</p>
-<p>If we do provide the <code>delim =</code> argument, just remember to include it in quotes (<code>"|"</code>):</p>
+<p>Provide the <code>delim =</code> argument, (just remember to include it in quotes)</p>
 <div class="tutorial-exercise" data-label="read_delim-file-txt-delim" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_delim(file = &quot;data/file.txt&quot;, delim = &quot;|&quot;)
-readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;, delim = &quot;|&quot;)</code></pre>
+readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;, delim = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -203,11 +203,14 @@ readr::read_delim(file = &quot;https://bit.ly/01-file-txt&quot;, delim = &quot;|
 </blockquote>
 <p>The <code>read_csv()</code> function will import a comma-separated values (csv) file, like the one we have in <code>data/file.csv</code>:</p>
 <p><img src="https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png" width="50%" height="50%" style="display: block; margin: auto;" /></p>
-<p>We’ve added a few decimal point values for demonstration purposes. Click ‘Run Code’ to see the imported file:</p>
+<p>We’ve added a few decimal point values for demonstration purposes.</p>
+<p>Copy the URL below and place it (in quotes) in the <code>file =</code> argument.</p>
+<pre class="markdown"><code>https://bit.ly/01-file-csv</code></pre>
+<p>Click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="file-csv-read_csv" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;)
-read_csv(&quot;https://bit.ly/01-file-csv&quot;)</code></pre>
+read_csv(file = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -219,11 +222,14 @@ read_csv(&quot;https://bit.ly/01-file-csv&quot;)</code></pre>
 <p>Some datasets (like those from Sweden or Germany), will use commas for decimals (i.e. <code>0.5</code> = <code>0,5</code>) and semicolons as a delimiter (instead of pipes, tabs, or commas).</p>
 <p>We have an example in <code>data/file2.csv</code>:</p>
 <p><img src="https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file2-csv.png" width="50%" height="50%" style="display: block; margin: auto;" /></p>
-<p>To import these files, use the <code>read_csv2()</code> function. Click ‘Run Code’ to see the imported file:</p>
+<p>To import these files, use the <code>read_csv2()</code> function.</p>
+<p>Copy the URL below and place it (in quotes) in the <code>file =</code> argument.</p>
+<pre class="markdown"><code>https://bit.ly/01-file2-csv</code></pre>
+<p>Click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="read_csv2-file2-csv" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv2(file = &quot;data/file2.csv&quot;)
-read_csv2(&quot;https://bit.ly/01-file2-csv&quot;)</code></pre>
+read_csv2(file = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 <p>As we can see, <code>readr</code> tells us what was used as a <code>decimal</code> (as well as the <code>grouping mark</code>) and the <code>delimiter</code>.</p>
@@ -236,11 +242,13 @@ read_csv2(&quot;https://bit.ly/01-file2-csv&quot;)</code></pre>
 <p>Tab-separated files are similar to comma-separated value files, except instead of using commas to delimit each value, they use tabs. In a text editor, these files appear to have white space between the values:</p>
 <p><img src="https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-tsv.png" width="50%" height="50%" style="display: block; margin: auto;" /></p>
 <p>You might be wondering how <code>readr</code> can differentiate the white space <em>between values on the same line</em> and the white space <em>between rows</em>. This is because the white space between values contains a tab, which is a <a href="https://en.wikipedia.org/wiki/Tab_key#Tab_characters">special character</a> used to identify tabs (<code>\t</code>). This is different from the invisible character used to identify a new row (or <a href="https://en.wikipedia.org/wiki/Newline">Newline</a>), which is <code>\n</code>.</p>
+<p>Copy the URL below and place it (in quotes) in the <code>file =</code> argument.</p>
+<pre class="markdown"><code>https://bit.ly/01-file-tsv</code></pre>
 <p>Click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="read_tsv-file-tsv" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_tsv(file = &quot;data/file.tsv&quot;)
-read_tsv(&quot;https://bit.ly/01-file-tsv&quot;)</code></pre>
+read_tsv(file = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 <p>This comes in handy, because it means we can manually type the contents of a text file <em>directly</em> into any <code>read_*()</code> functions. Try it below:</p>
@@ -271,36 +279,39 @@ readr::read_delim(file = &quot;paste here&quot;)</code></pre>
 <blockquote>
 <p>“No header.”</p>
 </blockquote>
-<p>If your dataset doesn’t have column names, you can omit these with <code>col_names = FALSE</code></p>
+<p>If your dataset doesn’t have column names, you can omit these with <code>col_names = FALSE</code>.</p>
+<p>Remove the column names and click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="col_names" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, 
 #                 col_names = FALSE)
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                col_names = FALSE)</code></pre>
+                col_names = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 <blockquote>
 <p>“Provide header.”</p>
 </blockquote>
 <p>The default behavior is to name these columns <code>X1</code>, <code>X2</code>, <code>X3</code>, etc. However, you can also specify the column names as a string vector (i.e., <code>c("x", "y", "z")</code>)</p>
+<p>Change the column names from <code>A</code>, <code>B</code>, <code>C</code> to <code>x</code>, <code>y</code>, <code>z</code> and click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="supply-col_names" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, 
 #                   col_names = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;))
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                col_names = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;))</code></pre>
+                col_names = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
 <div id="section-skip-lines" class="section level3">
 <h3>Skip lines</h3>
 <p>If there are lines we’d like to omit from our data file, we can use the <code>skip</code> argument and give a number of the lines we’d like to exclude.</p>
+<p>Skip the first line and click ‘Run Code’ to see the imported file:</p>
 <div class="tutorial-exercise" data-label="skip-lines" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, skip = 1)
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                skip = 1)</code></pre>
+                skip = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -310,6 +321,7 @@ readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;,
 <p>“Read multiple files into a single table.”</p>
 </blockquote>
 <p>We can also import multiple .csv files using a single call to <code>read_csv()</code>. Simply combine the names of the files in the <code>file</code> argument (in this case, it’s three URLs.). We also supply an <code>id</code> argument, which will allow us to identify the original data file.</p>
+<p>Provide a name for the <code>id</code> variable (in quotes) and click ‘Run Code’ to see the imported files.</p>
 <div class="tutorial-exercise" data-label="id-multiple" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = c(&quot;data/f1.csv&quot;, &quot;data/f2.csv&quot;, &quot;data/f3.csv&quot;), 
@@ -317,7 +329,7 @@ readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;,
 readr::read_csv(file = c(&quot;https://bit.ly/01-f1-csv&quot;, 
                          &quot;https://bit.ly/01-f2-csv&quot;, 
                         &quot;https://bit.ly/01-f3-csv&quot;), 
-                        id = &#39;origin_file&#39;)</code></pre>
+                        id = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -327,11 +339,12 @@ readr::read_csv(file = c(&quot;https://bit.ly/01-f1-csv&quot;,
 <p>“Read a subset of lines.”</p>
 </blockquote>
 <p>If we have a large dataset and would like to control the number of imported rows, we can use the <code>n_max</code> argument to set the maximum number of lines to read:</p>
+<p>Set the maximum number of rows to <code>2</code> and click ‘Run Code’ to see the imported file.</p>
 <div class="tutorial-exercise" data-label="n_max" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, n_max = 2)
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                n_max = 2)</code></pre>
+                n_max = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -341,11 +354,12 @@ readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;,
 <p>“Read values as missing.”</p>
 </blockquote>
 <p>We can also specify the values we’d like to set as ‘missing’. By default, R detects <code>NA</code> as missing, but we can set this to whatever we want with the <code>na</code> argument (note that this needs to be a string).</p>
+<p>Set the missing values to <code>1</code> (as a string) and click ‘Run Code’ to see the imported file.</p>
 <div class="tutorial-exercise" data-label="na" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, na = c(&quot;1&quot;))
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                na = c(&quot;1&quot;))</code></pre>
+                na = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -397,12 +411,13 @@ spec(x = )</code></pre>
 <blockquote>
 <p>“Hide col spec message.”</p>
 </blockquote>
-<p>If we don’t want to see the output from the column specification, we can hide this using the <code>show_col_types = FALSE</code> argument:</p>
+<p>If we don’t want to see the output from the column specification, we can hide this using the <code>show_col_types =</code> argument:</p>
+<p>Hide the column specifications using <code>show_col_types</code> and click ‘Run Code’ to see the imported file.</p>
 <div class="tutorial-exercise" data-label="show_col_types" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, show_col_types = FALSE)
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                show_col_types = FALSE)</code></pre>
+                show_col_types = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -411,11 +426,12 @@ readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;,
 <blockquote>
 <p>“Use names, position, or selection helpers.”</p>
 </blockquote>
+<p>Import only the <code>A</code> and <code>C</code> columns (as <code>c(A, C)</code>) using the <code>col_select</code> argument and click ‘Run Code’ to see the imported file.</p>
 <div class="tutorial-exercise" data-label="col_select" data-caption="import cheatseet" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># identical to:
 # readr::read_csv(file = &quot;data/file.csv&quot;, show_col_types = FALSE)
 readr::read_csv(file = &quot;https://bit.ly/01-file-csv&quot;, 
-                col_select = c(A, C))</code></pre>
+                col_select = )</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
 </div>
@@ -468,9 +484,92 @@ write_tsv(x = file_tsv, file = &quot;processed-data/file_tsv.tsv&quot;) </code><
 </div>
 <div id="section-import-data-with-readxl" class="section level2">
 <h2>Import data with <code>readxl</code></h2>
+<p>Microsoft Excel files are commonly used for data entry and storage. Despite being a proprietary format, we’re able to import these files using the <code>readxl</code> package.</p>
+<p>The data in this section are available at this <a href="https://github.com/mjfrigaard/csuc-data-jounalism-learnr/raw/main/cheatsheets/rscs-01-import/data/readxl/readxl-data.xlsx">link</a>.</p>
+<p>We’ll proceed as though they’ve been downloaded into a local <code>data/readxl/</code> folder:</p>
+<div id="section-read-files" class="section level3">
+<h3>Read files</h3>
+<p><code>readxl</code> comes with three functions for reading Excel data: <code>read_excel()</code>, <code>read_xls()</code>, and <code>read_xlxs()</code></p>
+</div>
+<div id="section-read-sheets" class="section level3">
+<h3>Read sheets</h3>
+<blockquote>
+<p>“Get a vector of sheet names.”</p>
+</blockquote>
+<pre class="r"><code>excel_sheets(path = &quot;data/readxl/readxl-data.xlsx&quot;)</code></pre>
+<pre><code>## [1] &quot;f1.csv&quot; &quot;f2.csv&quot; &quot;f3.csv&quot;</code></pre>
+<blockquote>
+<p>“Specify which sheet to read by position or name.”</p>
+</blockquote>
+<p>Position is numeric, with <code>1</code> being the first sheet.</p>
+<pre class="r"><code>read_excel(path = &quot;data/readxl/readxl-data.xlsx&quot;, 
+    sheet = 1)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##       A     B     C
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     2   4.5     3
+## 2     1   7       4
+## 3    NA   8       2</code></pre>
+<p>You can also provide the name of the sheet (from <code>excel_sheets()</code> above).</p>
+<pre class="r"><code>read_excel(path = &quot;data/readxl/readxl-data.xlsx&quot;, 
+    sheet = &quot;f1.csv&quot;)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##       A     B     C
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     2   4.5     3
+## 2     1   7       4
+## 3    NA   8       2</code></pre>
+</div>
+<div id="section-read-multiple-sheets" class="section level3">
+<h3>Read multiple sheets</h3>
+<blockquote>
+<ol style="list-style-type: decimal">
+<li>Get a vector of sheet names from the file path.<br />
+</li>
+<li>Set the vector names to be the sheet names.<br />
+</li>
+<li>Use <code>purrr::map_dfr()</code> to read multiple files into one data frame.</li>
+</ol>
+</blockquote>
+<pre class="r"><code>path &lt;- &quot;data/readxl/readxl-data.xlsx&quot;
+path %&gt;% 
+    excel_sheets() %&gt;% 
+    purrr::set_names() %&gt;% 
+    purrr::map_dfr(.x = ., .f = read_excel, path = path)</code></pre>
+<pre><code>## # A tibble: 9 × 3
+##       A     B     C
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     2   4.5     3
+## 2     1   7       4
+## 3    NA   8       2
+## 4     9   4.6     2
+## 5     1   7.2     5
+## 6     4   3      NA
+## 7    NA   2.2     5
+## 8     4   5       3
+## 9     1   2       6</code></pre>
+</div>
+<div id="section-column-specification" class="section level3">
+<h3>Column specification</h3>
+</div>
+<div id="section-write-sheets" class="section level3">
+<h3>Write sheets</h3>
+</div>
 </div>
 <div id="section-import-data-with-googlesheets4" class="section level2">
 <h2>Import data with <code>googlesheets4</code></h2>
+<div id="section-read-sheets-1" class="section level3">
+<h3>Read sheets</h3>
+</div>
+<div id="section-metadata" class="section level3">
+<h3>Metadata</h3>
+</div>
+<div id="section-column-specifications" class="section level3">
+<h3>Column specifications</h3>
+</div>
+<div id="section-write-sheets-1" class="section level3">
+<h3>Write sheets</h3>
+</div>
 </div>
 <div id="section-conclusion" class="section level2">
 <h2>Conclusion</h2>
@@ -485,6 +584,7 @@ library(tidyverse)
 library(googlesheets4)
 library(skimr)
 library(knitr)
+library(readxl)
 # pipe url: https://bit.ly/01-file-txt ----
 # CSV url: https://bit.ly/01-file-csv ----
 # CSV2 url: https://bit.ly/01-file2-csv ----
