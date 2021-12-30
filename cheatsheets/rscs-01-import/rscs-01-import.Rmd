@@ -73,11 +73,17 @@ We'll assume each data file is located in a `data/` folder like the one printed 
 ```
 
 
-## Read delimited files 
+## Read delimited files (`readr`)
 
 There are four primary functions for importing delimited files: `read_delim()`, `read_csv()`, `read_csv2()`, and `read_tsv()`. 
 
-These functions are designed to work with plain text files. We can also import plain text files in the **Environment** pane (see below:)
+We can also import plain text files by clicking *Import Dataset* in the **Environment** pane (see below:)
+
+```{r env-pane.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/env-pane.png")
+```
+
+As we can see from the dropdown options, `readr`'s functions are designed to work with 'Text' (or 'plain text') files. There are also import functions from base R, but we won't cover those here. 
 
 ### Delimited files 
 

@@ -163,9 +163,12 @@ library(googlesheets4)</code></pre>
 #   ├── file.txt
 #   └── file2.csv</code></pre>
 </div>
-<div id="section-read-delimited-files" class="section level2">
-<h2>Read delimited files</h2>
-<p>There are four primary functions for importing delimited files: <code>read_delim()</code>, <code>read_csv()</code>, <code>read_csv2()</code>, and <code>read_tsv()</code></p>
+<div id="section-read-delimited-files-readr" class="section level2">
+<h2>Read delimited files (<code>readr</code>)</h2>
+<p>There are four primary functions for importing delimited files: <code>read_delim()</code>, <code>read_csv()</code>, <code>read_csv2()</code>, and <code>read_tsv()</code>.</p>
+<p>We can also import plain text files by clicking <em>Import Dataset</em> in the <strong>Environment</strong> pane (see below:)</p>
+<p><img src="https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/env-pane.png" width="50%" height="50%" style="display: block; margin: auto;" /></p>
+<p>As we can see from the dropdown options, <code>readr</code>‘s functions are designed to work with ’Text’ (or ‘plain text’) files. There are also import functions from base R, but we won’t cover those here.</p>
 <div id="section-delimited-files" class="section level3">
 <h3>Delimited files</h3>
 <blockquote>
@@ -220,11 +223,7 @@ read_csv(&quot;https://bit.ly/01-file-csv&quot;)</code></pre>
 read_csv2(&quot;https://bit.ly/01-file2-csv&quot;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":true,"message":true,"exercise.df_print":"default","exercise.checker":"NULL"}</script>
 </div>
-<p>As we can see, readr tells us what was used as a <code>decimal</code> (as well as the <code>grouping mark</code>) and the <code>delimiter</code></p>
-<pre><code>Using &quot;&#39;,&#39;&quot; as decimal and &quot;&#39;.&#39;&quot; as grouping mark.
-Rows: 2 Columns: 3
- ── Column specification ───────────────
- Delimiter: &quot;;&quot;</code></pre>
+<p>As we can see, <code>readr</code> tells us what was used as a <code>decimal</code> (as well as the <code>grouping mark</code>) and the <code>delimiter</code>.</p>
 </div>
 <div id="section-tab-separated-values-files" class="section level3">
 <h3>Tab-separated values files</h3>
