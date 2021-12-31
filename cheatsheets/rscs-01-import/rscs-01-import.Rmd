@@ -506,19 +506,26 @@ setwd("/Users/mjfrigaard/Dropbox/@projects/high-priority/@data-journalism/course
 
 ### Read files 
 
-`readxl` comes with three functions for reading Excel data: `read_excel()`, `read_xls()`, and `read_xlxs()`
+`readxl` comes with three functions for reading Excel files: `read_excel()`, `read_xls()`, and `read_xlxs()`
 
-### Read sheets 
+### Print sheets 
 
 > "Get a vector of sheet names."
+
+The best place to start is with `excel_sheets()`, which tells us the names of the sheets in an Excel file. 
 
 ```{r excel_sheets, eval=TRUE, echo=TRUE}
 excel_sheets(path = "data/readxl/readxl-data.xlsx")
 ```
 
+
+We can see this file has three sheets: `"f1.csv"`, `"f2.csv"`, `"f3.csv"`
+
+### Read sheets
+
 > "Specify which sheet to read by position or name."
 
-Position is numeric, with `1` being the first sheet. 
+If we want to import a sheet from the `readxl-data.xlsx` file, Position is numeric, with `1` being the first sheet. 
 
 ```{r read_excel-f1-position, eval=TRUE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
