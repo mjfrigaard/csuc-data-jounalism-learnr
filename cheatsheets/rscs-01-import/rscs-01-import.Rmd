@@ -38,11 +38,11 @@ knitr::opts_chunk$set(error = TRUE,
 Access the cheatsheet [here](https://github.com/rstudio/cheatsheets/blob/main/data-import.pdf).
 
 ```{r 01-import-p1.png, echo=FALSE, fig.align='left', out.height='80%', out.width='80%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/01-import-p1.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/01-import-p1.png")
 ```
 
 ```{r 01-import-p2.png, echo=FALSE, fig.align='right', out.height='80%', out.width='80%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/01-import-p2.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/01-import-p2.png")
 ```
 
 This cheatsheet covers importing data of various formats into RStudio. We're going to show how this looks on your machine (with examples). 
@@ -61,7 +61,7 @@ library(googlesheets4)
 Below is an example of the data files on macOS. We can see each file name and extension is associated with a different 'Kind' (or type).
 
 ```{r files-folder.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/files-folder.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/files-folder.png")
 ```
 
 You can download the data uses in this example [here](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/tree/main/cheatsheets/rscs-01-import/data).
@@ -87,7 +87,7 @@ There are four primary functions for importing delimited files: `read_delim()`, 
 We can also import plain text files by clicking *Import Dataset* in the **Environment** pane (see below:)
 
 ```{r env-pane.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/env-pane.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/env-pane.png")
 ```
 
 As we can see from the dropdown options, `readr`'s functions are designed to work with 'Text' (or 'plain text') files. There are also import functions from base R, but we won't cover those here. 
@@ -99,7 +99,7 @@ As we can see from the dropdown options, `readr`'s functions are designed to wor
 All `readr` functions will import data from a local file *or* web URL. Below we use a URL for the `file.txt` data, which has the following structure: 
 
 ```{r file-txt.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-txt.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/file-txt.png")
 ```
 
 These are sometimes called [pipe-delimited flat files](https://en.wikipedia.org/wiki/Delimiter-separated_values), and their extension is usually `.txt` or `.dat`.
@@ -130,7 +130,7 @@ readr::read_delim(file = "https://bit.ly/01-file-txt", delim = )
 The `read_csv()` function will import a comma-separated values (csv) file, like the one we have in `data/file.csv`:
 
 ```{r file-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-csv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/file-csv.png")
 ```
 
 We've added a few decimal point values for demonstration purposes. 
@@ -158,7 +158,7 @@ Some datasets (like those from Sweden or Germany), will use commas for decimals 
 We have an example in `data/file2.csv`:
 
 ```{r file2-csv.png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file2-csv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/file2-csv.png")
 ```
 
 To import these files, use the `read_csv2()` function. 
@@ -187,7 +187,7 @@ As we can see, `readr` tells us what was used as a `decimal` (as well as the `gr
 Tab-separated files are similar to comma-separated value files, except instead of using commas to delimit each value, they use tabs. In a text editor, these files appear to have white space between the values:
 
 ```{r file-tsv-png, echo=FALSE, fig.align='center', out.height='50%', out.width='50%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/file-tsv.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/file-tsv.png")
 ```
 
 You might be wondering how `readr` can differentiate the white space *between values on the same line* and the white space *between rows*. This is because the white space between values contains a tab, which is a [special character](https://en.wikipedia.org/wiki/Tab_key#Tab_characters) used to identify tabs (`\t`). This is different from the invisible character used to identify a new row (or [Newline](https://en.wikipedia.org/wiki/Newline)), which  is `\n`.
@@ -228,7 +228,7 @@ A few things to note when importing 'Text' files with `readr`:
 2. `readr` gives us a lot of information whenever it imports a file (see below):
 
 ```{r read-delim-specs.png, echo=FALSE, fig.align='center', out.height='100%', out.width='100%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/read-delim-specs.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/read-delim-specs.png")
 ```
 
 Depending on which function you use, this will include the delimiter, decimal, column names, dimensions and column specifications (which we will cover in the next sections).
@@ -415,31 +415,31 @@ readr::read_csv(file = "https://bit.ly/01-file-csv",
 Most of these options are available from the data import GUI in the **Environment** pane. After clicking on *Import Dataset*, you'll select *From Text (readr)*. Click on *Browse* and navigate to a plain text file (the `file.csv` is show below as an example):
 
 ```{r import-readr-gui-path.png, echo=FALSE, fig.align='center', out.height='80%', out.width='80%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-path.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/import-readr-gui-path.png")
 ```
 
 You'll see a preview of the data file in the **Data Preview** section, with each column name and format. I've indicated the options we've covered in the **Import Options** section: 
 
 ```{r import-readr-gui-options.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-options.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/import-readr-gui-options.png")
 ```
 
 Next to the **Import Options** there is a **Code Preview** section that will create the code needed to import what you see in the **Data Preview** section. 
 
 ```{r import-readr-gui-code.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-code.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/import-readr-gui-code.png")
 ```
 
 Changes to the **Import Options** will cause changes in the **Code Preview**. Below I change the *Skip*, *First Row as Names*, and *Open Data Viewer* options: 
 
 ```{r import-readr-gui-options-alt.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-options-alt.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/import-readr-gui-options-alt.png")
 ```
 
 And we can see the corresponding changes to the **Code Preview** section:
 
 ```{r import-readr-gui-code-alt.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
-knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/img/import-readr-gui-code-alt.png")
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/import-readr-gui-code-alt.png")
 ```
 
 Using the GUI is a helpful tool for learning how the R code works for importing code!
@@ -494,9 +494,13 @@ write_tsv(x = file_tsv, file = "processed-data/file_tsv.tsv")
 
 Microsoft Excel files are commonly used for data entry and storage. Despite being a proprietary format, we're able to import these files using the `readxl` package. 
 
-The data in this section are available at this [link](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/raw/main/cheatsheets/rscs-01-import/data/readxl/readxl-data.xlsx). 
+The data in this section are available at this [link](https://github.com/mjfrigaard/csuc-data-jounalism-learnr/raw/main/cheatsheets/rscs-01-import/data/readxl/readxl-data.xlsx). This file has the following contents: 
 
-We'll proceed as though they've been downloaded into a local `data/readxl/` folder: 
+```{r excel-file.png, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/excel-file.png")
+```
+
+We'll proceed as though they've been downloaded into a local `data/readxl/` folder:
 
 ```{r setwd, echo=FALSE, results='hide'}
 getwd()
@@ -525,25 +529,39 @@ We can see this file has three sheets: `"f1.csv"`, `"f2.csv"`, `"f3.csv"`
 
 > "Specify which sheet to read by position or name."
 
-If we want to import a sheet from the `readxl-data.xlsx` file, Position is numeric, with `1` being the first sheet. 
+If we want to import a sheet from the `readxl-data.xlsx` file, we can use the `read_excel()` function and specify the sheet name or position with the `sheet` argument.
+
+Position is numeric, with `1` being the first sheet. 
 
 ```{r read_excel-f1-position, eval=TRUE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = 1)
 ```
 
-You can also provide the name of the sheet (from `excel_sheets()` above).
+If we want to use the name of the sheet, we must supply this as a string (in quotes) 
 
 ```{r read_excel-f1-name, eval=TRUE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = "f1.csv")
 ```
 
+Just like the output from `excel_sheets()` above!
+
 ### Read multiple sheets
+
+If we want to import all the sheets in `readxl-data`, we can combine `excel_sheets()` with `read_excel()` with [`map_dfr()`](https://purrr.tidyverse.org/reference/map.html) from the [`purrr` package](https://purrr.tidyverse.org/index.html). 
 
 > 1. Get a vector of sheet names from the file path.  
 > 2. Set the vector names to be the sheet names.   
 > 3. Use `purrr::map_dfr()` to read multiple files into one data frame.  
+
+I'll go into slightly more detail about what the code below is doing:
+
+1. We assign the local path to a character string, `path`  
+2. We then pipe `path` to `excel_sheets()`, and we know what this output will be from the step above (`"f1.csv"`, `"f2.csv"`, `"f3.csv"`)  
+3. The `purrr::set_names()` names each item in `path`, turning it into this: `f1.csv = "f1.csv"`, `f2.csv = "f2.csv"`, `f3.csv = "f3.csv"`  
+4. We then passed this named vector to the `.x` argument in the `map_dfr()` function, and we pass `read_excel()` to the `.f` argument    
+5. The `read_excel()` function has a `path` argument, and we will pass the original `path` vector (where the file is located)  
 
 ```{r imoport-multiple-excel, eval=TRUE, echo=TRUE}
 path <- "data/readxl/readxl-data.xlsx"
@@ -553,9 +571,46 @@ path %>%
     purrr::map_dfr(.x = ., .f = read_excel, path = path)
 ```
 
+The `map_dfr()` function stands for "map data frame, row-bind", which means all the data have been 'stacked' into a long data format.  This is identical to: 
+
+```{r import-sheets, eval=TRUE, echo=TRUE}
+# import sheets
+f1 <- read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = 1)
+f2 <- read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = 2)
+f3 <- read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = 3)
+# bind together 
+bind_rows(f1, f2, f3)
+```
+
+Obviously we'd want to use the `map_dfr()` function to avoid a lot of copying and pasting. You can read more about Excel workflows on the [`readxl` website](https://readxl.tidyverse.org/).
 
 ### Column specification 
 
+> "Column specifications define what data type each column of a file will be imported as."
+
+We can specify the column types with the `col_types` argument. Below we set the columns in the `f1.csv` sheet to `"text"`.
+
+```{r col_types, eval=TRUE, echo=TRUE}
+read_excel(path = "data/readxl/readxl-data.xlsx", 
+    sheet = "f1.csv", col_types = "text")
+```
+
+The options for `col_types` are: 
+
+
+
+
+```{r , echo=FALSE, eval=TRUE}
+reactable::reactable(data = 
+tibble::tribble(
+    ~logical, ~numeric,   ~text,        ~date,   ~list,
+        TRUE,        2, "hello", "1947-01-08", "hello",
+       FALSE,     3.45, "world", "1956-10-21",     "1"
+    ) %>% mutate(date = lubridate::as_date(date)))
+```
 
 
 ### Write sheets 
