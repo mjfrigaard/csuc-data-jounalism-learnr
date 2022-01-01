@@ -800,9 +800,58 @@ You can read more about these options on the [`openxlsx` website](https://ycphs.
 
 ## Import data with `googlesheets4`
 
+Another common storage format for data is in Google sheets, which similar to Microsoft Excel, but built for your browser. We can import data from these files using the [`googlesheets4` package](https://googlesheets4.tidyverse.org/). 
+
+### Authenticate 
+
+If you have a Google email address, you can authenticate the your account using the [`gs4_auth()` function](https://googlesheets4.tidyverse.org/reference/gs4_auth.html).
+
+```{r , eval=FALSE}
+gs4_auth()
+Is it OK to cache OAuth access credentials in the folder ~/Library/Caches/gargle between R sessions?
+
+1: Yes
+2: No
+```
+
+You'll be taken to your web browser, asked sign in and/or to approve the authentication, then you'll see this message when it's complete: 
+
+> `Authentication complete. Please close this page and return to R.`
+
 ### Read sheets 
 
+We have the data from the previous sections in a Google sheet a [this link](https://docs.google.com/spreadsheets/d/1jOmVxBfJesO7NRYyiT1Ox6k6hGTNX0DRm1ZzAZU2sEQ/edit?usp=sharing). 
+
+The function for importing data from Google Sheets is `read_sheet()`, but we will run the `gs4_deauth()` function first because we don't need access to a private sheet. 
+
+The link for the data is below: 
+
+```markdown
+https://docs.google.com/spreadsheets/d/1jOmVxBfJesO7NRYyiT1Ox6k6hGTNX0DRm1ZzAZU2sEQ/edit?usp=sharing
+```
+
+Copy the link above and paste it (in quotes) into the `read_sheet()` function below to import the data:
+
+```{r read_sheet, exercise=TRUE}
+gs4_deauth()
+read_sheet(ss = , sheet = "file-01.csv")
+```
+
+
 ### Metadata 
+
+```{r}
+gs4_get(ss = "https://docs.google.com/spreadsheets/d/1jOmVxBfJesO7NRYyiT1Ox6k6hGTNX0DRm1ZzAZU2sEQ/edit?usp=sharing")
+```
+
+
+
+
+
+
+
+
+
 
 ### Column specifications 
 
