@@ -822,6 +822,10 @@ You'll be taken to your web browser, asked sign in and/or to approve the authent
 
 We have the data from the previous sections in a Google sheet a [this link](https://docs.google.com/spreadsheets/d/1jOmVxBfJesO7NRYyiT1Ox6k6hGTNX0DRm1ZzAZU2sEQ/edit?usp=sharing). 
 
+```{r gs4-data.png, eval=TRUE, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/gs4-data.png")
+```
+
 The function for importing data from Google Sheets is `read_sheet()`, but we will run the `gs4_deauth()` function first because we don't need access to a private sheet. 
 
 The link for the data is below: 
