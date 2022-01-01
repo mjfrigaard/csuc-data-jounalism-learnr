@@ -525,7 +525,7 @@ The best place to start is with `excel_sheets()`, which tells us the names of th
 excel_sheets(path = "data/readxl/readxl-data.xlsx")
 ```
 
-```{r , eval=FALSE}
+```{r excel_sheets-print, eval=FALSE}
 # [1] "f1.csv" "f2.csv" "f3.csv"
 ```
 
@@ -544,7 +544,7 @@ read_excel(path = "data/readxl/readxl-data.xlsx",
     sheet = 1)
 ```
 
-```{r , eval=FALSE}
+```{r read_excel-f1-position-print, eval=FALSE}
 # # A tibble: 3 × 3
 # 
 #       A     B     C
@@ -562,7 +562,7 @@ read_excel(path = "data/readxl/readxl-data.xlsx",
     sheet = "f1.csv")
 ```
 
-```{r , eval=FALSE}
+```{r read_excel-f1-name-print, eval=FALSE}
 # # A tibble: 3 × 3
 # 
 #       A     B     C
@@ -598,7 +598,7 @@ path %>%
     purrr::map_dfr(.x = ., .f = read_excel, path = path)
 ```
 
-```{r, eval=FALSE}
+```{r map-dfr-f1-f3, eval=FALSE}
 # # A tibble: 9 × 3     
 #                                                                 
 #       A     B     C
@@ -629,7 +629,7 @@ f3 <- read_excel(path = "data/readxl/readxl-data.xlsx",
 bind_rows(f1, f2, f3)
 ```
 
-```{r, eval=FALSE}
+```{r bind_rows-f1-f3, eval=FALSE}
 # # A tibble: 9 × 3     
 #                                                                 
 #       A     B     C
@@ -658,7 +658,7 @@ read_excel(path = "data/readxl/readxl-data.xlsx",
     sheet = "f1.csv", col_types = "text")
 ```
 
-```{r, eval=FALSE}
+```{r f1.csv-print, eval=FALSE}
 # # A tibble: 3 × 3                                                             
 # 
 #   A     B     C    
@@ -683,7 +683,7 @@ When providing column types, you must either 1) enter nothing (in which case `re
 
 I've included the data types for each option of the `col_types` argument below:
 
-```{r , echo=FALSE, eval=TRUE}
+```{r reactable-types, echo=FALSE, eval=TRUE}
 reactable::reactable(data = 
 tibble::tribble(
     ~logical, ~numeric,   ~text,        ~date,   ~list,
@@ -693,9 +693,9 @@ tibble::tribble(
 ```
 
 
-### Write sheets 
+## Export data with writexl
 
-If we have a dataset in our R environment we want to write to an Excel sheet, we can do this with either `writexl` or `openxlsx`. The `writexl` package is lightweight and only has a single function for writing data frames to excel, `write_xlsx()`. 
+If we have a dataset in our R environment we want to write to an Excel sheet, we can do this with either `writexl`. The `writexl` package is lightweight and only has a single function for writing data frames to excel, `write_xlsx()`. 
 
 If you have a multiple data frames you'd like to export into an excel file with multiple sheets, you'll need to store these in a named list of data frames. 
 
@@ -710,7 +710,7 @@ excel_data <- path %>%
 excel_data
 ```
 
-```{r , eval=FALSE}
+```{r named-list-excel_data, eval=FALSE}
 # $f1.csv
 # # A tibble: 3 × 3
 #       A     B     C
@@ -744,15 +744,58 @@ fs::dir_create("data/writexl/")
 
 And we can export the `excel_data` list directly to this path (because it's already a named list).
 
-```{r write_xlsx}
+```{r write_xlsx, eval=FALSE, echo=TRUE}
 write_xlsx(x = excel_data, 
     path = "data/writexl/excel_data.xlsx")
 # verify
+fs::dir_tree("data")
+```
 
+```{r verify-writexl, eval=FALSE, echo=TRUE}
+# data/
+#   └── writexl
+#     └── excel_data.xlsx
+```
+
+This gives us the following `excel_data.xlsx` file:
+
+```{r excel-data-export.png, eval=TRUE, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/excel-data-export.png")
+```
+
+## Export data with openxlsx
+
+Another option is the [`openxlsx`](https://ycphs.github.io/openxlsx/index.html) package, which requires more code but has more options. 
+
+`openxlsx` allows us to create an Excel workbook (`createWorkbook()`), name the sheets (`addWorksheet()`), and write data files to the sheets with a variety of formatting options (`writeDataTable()` and `saveWorkbook()`). 
+
+```{r openxlsx-options, eval=FALSE, echo=TRUE}
+# create workbook 
+workbook <- createWorkbook()
+# add worksheets
+addWorksheet(wb = workbook, sheetName = "file-01.csv")
+addWorksheet(wb = workbook, sheetName = "file-02.csv")
+addWorksheet(wb = workbook, sheetName = "file-03.csv")
+# write data frames to sheets
+writeDataTable(wb = workbook, sheet = "file-02.csv", x = excel_data$f2.csv)
+writeDataTable(wb = workbook, sheet = "file-01.csv", x = excel_data$f1.csv)
+writeDataTable(wb = workbook, sheet = "file-03.csv", x = excel_data$f3.csv)
+# create folder for output
+fs::dir_create("data/openxlsx/")
+# save workbook
+saveWorkbook(wb = workbook, 
+             file = "data/openxlsx/openxlsx-output.xlsx", 
+             overwrite = TRUE)
+```
+
+This gives us the following file: 
+
+```{r openxlsx-export.png, eval=TRUE, echo=FALSE, fig.align='center', out.height='90%', out.width='90%'}
+knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csuc-data-jounalism-learnr/main/cheatsheets/rscs-01-import/www/openxlsx-export.png")
 ```
 
 
-
+You can read more about these options on the [`openxlsx` website](https://ycphs.github.io/openxlsx/articles/Introduction.html). 
 
 
 ## Import data with `googlesheets4`
