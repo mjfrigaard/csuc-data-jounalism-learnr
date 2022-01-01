@@ -19,6 +19,9 @@ library(googlesheets4)
 library(skimr)
 library(knitr)
 library(readxl)
+library(reactable)
+library(writexl)
+library(openxlsx)
 # pipe url: https://bit.ly/01-file-txt ----
 # CSV url: https://bit.ly/01-file-csv ----
 # CSV2 url: https://bit.ly/01-file2-csv ----
@@ -502,8 +505,8 @@ knitr::include_graphics(path = "https://raw.githubusercontent.com/mjfrigaard/csu
 
 We'll proceed as though they've been downloaded into a local `data/readxl/` folder:
 
-```{r setwd, echo=FALSE, results='hide'}
-getwd()
+```{r setwd, include=FALSE}
+# getwd()
 setwd("/Users/mjfrigaard/Dropbox/@projects/high-priority/@data-journalism/course-website/csuc-data-jounalism-learnr/cheatsheets/rscs-01-import")
 ```
 
@@ -518,10 +521,13 @@ setwd("/Users/mjfrigaard/Dropbox/@projects/high-priority/@data-journalism/course
 
 The best place to start is with `excel_sheets()`, which tells us the names of the sheets in an Excel file. 
 
-```{r excel_sheets, eval=TRUE, echo=TRUE}
+```{r excel_sheets, eval=FALSE, echo=TRUE}
 excel_sheets(path = "data/readxl/readxl-data.xlsx")
 ```
 
+```{r , eval=FALSE}
+# [1] "f1.csv" "f2.csv" "f3.csv"
+```
 
 We can see this file has three sheets: `"f1.csv"`, `"f2.csv"`, `"f3.csv"`
 
@@ -533,16 +539,37 @@ If we want to import a sheet from the `readxl-data.xlsx` file, we can use the `r
 
 Position is numeric, with `1` being the first sheet. 
 
-```{r read_excel-f1-position, eval=TRUE, echo=TRUE}
+```{r read_excel-f1-position, eval=FALSE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = 1)
 ```
 
+```{r , eval=FALSE}
+# # A tibble: 3 × 3
+# 
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     2   4.5     3
+# 2     1   7       4
+# 3    NA   8       2
+```
+
+
 If we want to use the name of the sheet, we must supply this as a string (in quotes) 
 
-```{r read_excel-f1-name, eval=TRUE, echo=TRUE}
+```{r read_excel-f1-name, eval=FALSE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = "f1.csv")
+```
+
+```{r , eval=FALSE}
+# # A tibble: 3 × 3
+# 
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     2   4.5     3
+# 2     1   7       4
+# 3    NA   8       2
 ```
 
 Just like the output from `excel_sheets()` above!
@@ -563,7 +590,7 @@ I'll go into slightly more detail about what the code below is doing:
 4. We then passed this named vector to the `.x` argument in the `map_dfr()` function, and we pass `read_excel()` to the `.f` argument    
 5. The `read_excel()` function has a `path` argument, and we will pass the original `path` vector (where the file is located)  
 
-```{r imoport-multiple-excel, eval=TRUE, echo=TRUE}
+```{r imoport-multiple-excel, eval=FALSE, echo=TRUE}
 path <- "data/readxl/readxl-data.xlsx"
 path %>% 
     excel_sheets() %>% 
@@ -571,9 +598,26 @@ path %>%
     purrr::map_dfr(.x = ., .f = read_excel, path = path)
 ```
 
+```{r, eval=FALSE}
+# # A tibble: 9 × 3     
+#                                                                 
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     2   4.5     3
+# 2     1   7       4
+# 3    NA   8       2
+# 4     9   4.6     2
+# 5     1   7.2     5
+# 6     4   3      NA
+# 7    NA   2.2     5
+# 8     4   5       3
+# 9     1   2       6
+```
+
+
 The `map_dfr()` function stands for "map data frame, row-bind", which means all the data have been 'stacked' into a long data format.  This is identical to: 
 
-```{r import-sheets, eval=TRUE, echo=TRUE}
+```{r import-sheets, eval=FALSE, echo=TRUE}
 # import sheets
 f1 <- read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = 1)
@@ -585,6 +629,22 @@ f3 <- read_excel(path = "data/readxl/readxl-data.xlsx",
 bind_rows(f1, f2, f3)
 ```
 
+```{r, eval=FALSE}
+# # A tibble: 9 × 3     
+#                                                                 
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     2   4.5     3
+# 2     1   7       4
+# 3    NA   8       2
+# 4     9   4.6     2
+# 5     1   7.2     5
+# 6     4   3      NA
+# 7    NA   2.2     5
+# 8     4   5       3
+# 9     1   2       6
+```
+
 Obviously we'd want to use the `map_dfr()` function to avoid a lot of copying and pasting. You can read more about Excel workflows on the [`readxl` website](https://readxl.tidyverse.org/).
 
 ### Column specification 
@@ -593,15 +653,35 @@ Obviously we'd want to use the `map_dfr()` function to avoid a lot of copying an
 
 We can specify the column types with the `col_types` argument. Below we set the columns in the `f1.csv` sheet to `"text"`.
 
-```{r col_types, eval=TRUE, echo=TRUE}
+```{r col_types, eval=FALSE, echo=TRUE}
 read_excel(path = "data/readxl/readxl-data.xlsx", 
     sheet = "f1.csv", col_types = "text")
 ```
 
+```{r, eval=FALSE}
+# # A tibble: 3 × 3                                                             
+# 
+#   A     B     C    
+#   <chr> <chr> <chr>
+# 1 2     4.5   3    
+# 2 1     7     4    
+# 3 NA    8     2  
+```
+
+
 The options for `col_types` are: 
 
+- `"skip"`  
+- `"guess"` = default  
+- `logical`   
+- `numeric`  
+- `text`  
+- `date`  
+- `list`  
 
+When providing column types, you must either 1) enter nothing (in which case `readxl` will guess the column type based on the contents), 2) enter a single column type for all columns (like we did above with `"text"`), or 3) enter one column type for each column in the data file.
 
+I've included the data types for each option of the `col_types` argument below:
 
 ```{r , echo=FALSE, eval=TRUE}
 reactable::reactable(data = 
@@ -614,6 +694,66 @@ tibble::tribble(
 
 
 ### Write sheets 
+
+If we have a dataset in our R environment we want to write to an Excel sheet, we can do this with either `writexl` or `openxlsx`. The `writexl` package is lightweight and only has a single function for writing data frames to excel, `write_xlsx()`. 
+
+If you have a multiple data frames you'd like to export into an excel file with multiple sheets, you'll need to store these in a named list of data frames. 
+
+Below is an example of how to do this with `purrr` and `readxl`. Instead of using `purrr`'s  `map_dfr()`, we use `map()` because it returns a list. 
+
+```{r excel_data, echo=FALSE, eval=FALSE}
+path <- "data/readxl/readxl-data.xlsx"
+excel_data <- path %>% 
+     excel_sheets() %>% 
+     purrr::set_names() %>% 
+     purrr::map(.x = ., .f = read_excel, path = path)
+excel_data
+```
+
+```{r , eval=FALSE}
+# $f1.csv
+# # A tibble: 3 × 3
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     2   4.5     3
+# 2     1   7       4
+# 3    NA   8       2
+# 
+# $f2.csv
+# # A tibble: 3 × 3
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1     9   4.6     2
+# 2     1   7.2     5
+# 3     4   3      NA
+# 
+# $f3.csv
+# # A tibble: 3 × 3
+#       A     B     C
+#   <dbl> <dbl> <dbl>
+# 1    NA   2.2     5
+# 2     4   5       3
+# 3     1   2       6
+```
+
+Now we'll create a directory for the output from `writexl` in our `data/` folder: 
+
+```{r create-writexl, eval=FALSE, echo=TRUE}
+fs::dir_create("data/writexl/")
+```
+
+And we can export the `excel_data` list directly to this path (because it's already a named list).
+
+```{r write_xlsx}
+write_xlsx(x = excel_data, 
+    path = "data/writexl/excel_data.xlsx")
+# verify
+
+```
+
+
+
+
 
 ## Import data with `googlesheets4`
 
